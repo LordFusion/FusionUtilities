@@ -10,6 +10,9 @@ commands:
   townyhelp:
     description: "FusionUtilities command for new players' Towny Help"
     usage: /townyhelp
+  vote:
+    description: "Provides links to the server's voting sites."
+    usage: /vote
 #  ft:
 #    description: "For testing only."
 #    usage: /ft
