@@ -9,9 +9,9 @@ Working on 1.7.10. \
 - TownyHelp Command \
 
 # Future Plans
-**- /vote ** \
-**- /donate ** \
-**- /poll ** \
+**- /vote** \
+**- /donate** \
+**- /poll** \
   - /poll create <weather/time/other> \
   - /poll [yes/no] \
   - /poll cancel \
