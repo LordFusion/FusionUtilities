@@ -1,0 +1,16 @@
+name: FusionUtilities
+version: 1.00.001
+main: io.github.lordfusion.fusionutilities.FusionUtilities
+prefix: FusionUtilities
+authors: [Lord_Fusion]
+description: Miscellaneous garbage.
+website: lordfusion.github.io
+
+commands:
+  townyhelp:
+    description: "FusionUtilities command for new players' Towny Help"
+    usage: /townyhelp
+#  ft:
+#    description: "For testing only."
+#    usage: /ft
+#    permission: fusion.utilities.test
