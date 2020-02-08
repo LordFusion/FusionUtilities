@@ -40,12 +40,12 @@ public class DataManager
     
         // Make sure the file is complete
         boolean fileChanged = false;
-        if (!config.getKeys(false).contains("MineTweaker AutoReload")) {
-            config.set("MineTweaker AutoReload", false);
+        if (!config.getKeys(false).contains(MT_RELOAD)) {
+            config.set(MT_RELOAD, false);
             fileChanged = true;
         }
-        if (!config.getKeys(false).contains("TownyHelp Command")) {
-            config.set("TownyHelp Command", false);
+        if (!config.getKeys(false).contains(TOWNY_CMD)) {
+            config.set(TOWNY_CMD, false);
             fileChanged = true;
         }
         
@@ -65,8 +65,8 @@ public class DataManager
         this.config.options().header("Fusion Utilities Configuration File");
         this.config.options().indent(2);
         // Default Values
-        this.config.set("MineTweaker AutoReload", false);
-        this.config.set("TownyHelp Command", false);
+        this.config.set(MT_RELOAD, false);
+        this.config.set(TOWNY_CMD, false);
         FusionUtilities.sendConsoleInfo("Default config restored.");
         // Save
         this.saveConfigFile();
