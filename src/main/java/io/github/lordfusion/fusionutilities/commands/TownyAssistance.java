@@ -47,6 +47,7 @@ public class TownyAssistance implements CommandExecutor
                 for (TextComponent tc : this.basicsMessage) {
                     ((Player)sender).spigot().sendMessage(tc);
                 }
+                break;
         }
         
         return true;
