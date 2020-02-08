@@ -28,7 +28,9 @@ public final class FusionUtilities extends JavaPlugin
         if (this.dataManager.doTownyAssistance())
             getCommand("townyhelp").setExecutor(new TownyAssistance());
         
-        
+        // Vote Command
+        if (this.dataManager.doVoteCommand())
+            getCommand("vote").setExecutor(new Vote());
     }
     
     @Override
