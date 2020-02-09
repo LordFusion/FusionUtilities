@@ -13,7 +13,10 @@ public class Vote implements CommandExecutor
 {
     TextComponent[] msgs;
     
-    public Vote() {}
+    public Vote()
+    {
+        this.setupMsgs();
+    }
     
     /**
      * Executes the given command, returning its success
@@ -59,6 +62,4 @@ public class Vote implements CommandExecutor
         link2.setColor(ChatColor.AQUA);
         this.msgs[2].addExtra(link2);
     }
-    
-    
 }
