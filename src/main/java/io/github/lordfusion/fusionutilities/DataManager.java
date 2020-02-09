@@ -15,6 +15,7 @@ public class DataManager
     private static final String MT_RELOAD = "MineTweaker AutoReload";
     private static final String TOWNY_CMD = "Towny Assistance Command";
     private static final String VOTE_CMD = "Vote Command";
+    private static final String DONATE_CMD = "Donate Command";
     
     /**
      * The DataManager... Manages data. All of it. Any file-related data this plugin needs, here it is. Right here.
@@ -53,6 +54,10 @@ public class DataManager
             config.set(VOTE_CMD, false);
             fileChanged = true;
         }
+        if (!config.getKeys(false).contains(DONATE_CMD)) {
+            config.set(DONATE_CMD, false);
+            fileChanged = true;
+        }
         
         // Save the config if we added a missing default value
         if (fileChanged)
@@ -73,6 +78,7 @@ public class DataManager
         this.config.set(MT_RELOAD, false);
         this.config.set(TOWNY_CMD, false);
         this.config.set(VOTE_CMD, false);
+        this.config.set(DONATE_CMD, false);
         FusionUtilities.sendConsoleInfo("Default config restored.");
         // Save
         this.saveConfigFile();
@@ -120,5 +126,15 @@ public class DataManager
     public void setVoteCommand(boolean b)
     {
         this.config.set(VOTE_CMD, b);
+    }
+    public boolean doDonateCommand()
+    {
+        if (this.config != null && this.config.contains(DONATE_CMD))
+            return this.config.getBoolean(DONATE_CMD, false);
+        return false;
+    }
+    public void setDonateCommand(boolean b)
+    {
+        this.config.set(DONATE_CMD, b);
     }
 }

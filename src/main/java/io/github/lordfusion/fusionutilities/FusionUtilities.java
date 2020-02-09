@@ -1,5 +1,6 @@
 package io.github.lordfusion.fusionutilities;
 
+import io.github.lordfusion.fusionutilities.commands.Donate;
 import io.github.lordfusion.fusionutilities.commands.TownyAssistance;
 import io.github.lordfusion.fusionutilities.commands.Vote;
 import io.github.lordfusion.fusionutilities.utilities.MinetweakerReloader;
@@ -32,6 +33,10 @@ public final class FusionUtilities extends JavaPlugin
         // Vote Command
         if (this.dataManager.doVoteCommand())
             getCommand("fusion-vote").setExecutor(new Vote());
+        
+        // Donate Command
+        if (this.dataManager.doDonateCommand())
+            getCommand("fusion-donate").setExecutor(new Donate());
     }
     
     @Override
