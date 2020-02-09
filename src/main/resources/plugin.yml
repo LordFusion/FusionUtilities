@@ -18,6 +18,10 @@ commands:
     description: "Provides a link to the server's donation site."
     aliases: [donate]
     usage: /<command>
+  fusion-poll:
+    description: "Start a server-wide vote to change time, weather, or ask a question."
+    aliases: [poll]
+    usage: /<command>
 
 #  ft:
 #    description: "For testing only."
