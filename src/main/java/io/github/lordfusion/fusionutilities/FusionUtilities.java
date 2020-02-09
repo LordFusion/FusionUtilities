@@ -1,7 +1,8 @@
 package io.github.lordfusion.fusionutilities;
 
-import io.github.lordfusion.fusionutilities.utilities.MinetweakerReloader;
 import io.github.lordfusion.fusionutilities.commands.TownyAssistance;
+import io.github.lordfusion.fusionutilities.commands.Vote;
+import io.github.lordfusion.fusionutilities.utilities.MinetweakerReloader;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
