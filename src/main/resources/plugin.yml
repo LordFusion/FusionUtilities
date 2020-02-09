@@ -13,7 +13,11 @@ commands:
   fusion-vote:
     description: "Provides links to the server's voting sites."
     aliases: [vote]
-    usage: /[alias]
+    usage: /<command>
+  fusion-donate:
+    description: "Provides a link to the server's donation site."
+    aliases: [donate]
+    usage: /<command>
 
 #  ft:
 #    description: "For testing only."
