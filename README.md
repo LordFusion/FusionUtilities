@@ -7,8 +7,8 @@ Working on 1.7.10.
 # Latest Release: 1.00.001
 - MineTweaker Reload (on player join)
 - TownyHelp Command
+- Vote Command
 
 # Future Plans
-- /vote
 - /donate
 - /poll
