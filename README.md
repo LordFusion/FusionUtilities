@@ -10,4 +10,5 @@ Working on 1.7.10.
 - Vote & Donate commands
 
 # Future Plans
-- Vote Command
+- Poll Command
+- Kick from Town Command
