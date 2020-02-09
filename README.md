@@ -4,11 +4,10 @@ A personalized utility plugin used on my own servers.
 Designed for 1.7.10.
 Working on 1.7.10.
 
-# Latest Release: 1.00.001
+# Latest Release: 1.02
 - MineTweaker Reload (on player join)
 - TownyHelp Command
+- Vote & Donate commands
 
 # Future Plans
-- /vote
-- /donate
 - /poll
