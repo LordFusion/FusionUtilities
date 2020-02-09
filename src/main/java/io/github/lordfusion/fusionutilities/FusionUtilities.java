@@ -31,7 +31,7 @@ public final class FusionUtilities extends JavaPlugin
         
         // Vote Command
         if (this.dataManager.doVoteCommand())
-            getCommand("vote").setExecutor(new Vote());
+            getCommand("fusion-vote").setExecutor(new Vote());
     }
     
     @Override
