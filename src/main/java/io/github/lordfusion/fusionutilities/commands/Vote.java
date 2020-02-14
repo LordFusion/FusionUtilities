@@ -58,7 +58,7 @@ public class Vote implements CommandExecutor
         this.msgs[2] = new TextComponent("MinecraftMP: ");
         this.msgs[2].setColor(ChatColor.DARK_AQUA);
         TextComponent link2 = new TextComponent("minecraft-mp.com/server/179220/vote");
-        link2.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://minecraft-mp.com/server/179220/vote"));
+        link2.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://minecraft-mp.com/server/179220/vote/"));
         link2.setColor(ChatColor.AQUA);
         this.msgs[2].addExtra(link2);
     }
