@@ -107,8 +107,10 @@ public class Poll implements CommandExecutor
                 } else {
                     // Custom poll?
                     StringBuilder q = new StringBuilder();
-                    for (int i=0; i<args.length; i++)
-                        q.append(args[i]);
+                    for (String arg : args) {
+                        q.append(arg);
+                        q.append(' ');
+                    }
                     if (q.length() > 80) {
                         FusionUtilities.sendUserMessage(sender, MSG_TOO_LONG);
                         return true;
