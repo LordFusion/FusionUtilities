@@ -26,6 +26,7 @@ public class Poll implements CommandExecutor
         setupMsgPollYes();
         setupMsgPollNo();
         setupMsgTooLong();
+        setupMsgCannotAfford();
         
         ALL_HELP = new TextComponent[3];
         setupMsgHelpWeather();
@@ -114,7 +115,9 @@ public class Poll implements CommandExecutor
                     }
                 }
             } else {
-                // todo: msg_cannot_afford
+                FusionUtilities.sendConsoleInfo(sender.getName() + " could not afford to start a poll.");
+                FusionUtilities.sendUserMessage(sender, MSG_CANNOT_AFFORD);
+                return true;
             }
         } else if (args[0].equalsIgnoreCase("yes")) {
             this.instance.voteYes(((Player) sender).getPlayer());
@@ -155,6 +158,12 @@ public class Poll implements CommandExecutor
     {
         MSG_TOO_LONG = new TextComponent("Question too long! (max 80 characters)");
         MSG_TOO_LONG.setColor(ChatColor.RED);
+    }
+    private void setupMsgCannotAfford()
+    {
+        MSG_CANNOT_AFFORD = new TextComponent("You cannot afford to start a poll ($" + this.dataManager.getPollCost()
+                + ")!");
+        MSG_CANNOT_AFFORD.setColor(ChatColor.RED);
     }
     private void setupMsgHelpWeather()
     {
