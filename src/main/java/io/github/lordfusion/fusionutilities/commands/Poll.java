@@ -146,19 +146,19 @@ public class Poll implements CommandExecutor
     }
     private void setupMsgHelpWeather()
     {
-        HELP_WEATHER = new TextComponent("/poll create weather <SUN|RAIN|THUNDER>");
+        HELP_WEATHER = new TextComponent("/poll weather <SUN|RAIN|THUNDER>");
         HELP_WEATHER.setColor(ChatColor.DARK_AQUA);
         ALL_HELP[0] = HELP_WEATHER;
     }
     private void setupMsgHelpTime()
     {
-        HELP_TIME = new TextComponent("/poll create time <DAY|NIGHT>");
+        HELP_TIME = new TextComponent("/poll time <DAY|NIGHT>");
         HELP_TIME.setColor(ChatColor.DARK_AQUA);
         ALL_HELP[1] = HELP_TIME;
     }
     private void setupMsgHelpCustom()
     {
-        HELP_CUSTOM = new TextComponent("/poll create <QUESTION>");
+        HELP_CUSTOM = new TextComponent("/poll <QUESTION>");
         HELP_CUSTOM.setColor(ChatColor.DARK_AQUA);
         ALL_HELP[2] = HELP_CUSTOM;
     }
