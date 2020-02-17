@@ -37,9 +37,10 @@ public class PollInstance implements Runnable
     {
         this.dataManager = FusionUtilities.getInstance().getDataManager();
         
-        if (this.dataManager.isEconomyEnabled() && !creator.hasPermission(FusionUtilities.PERMISSION_FREEPOLL)) {
+        if (this.dataManager.isEconomyEnabled() && !creator.hasPermission(FusionUtilities.PERMISSION_FREEPOLL) &&
+                (this.dataManager.getPollCost() > 0)) {
             // Charge poll cost
-            EconomyResponse response = this.dataManager.getEconomy().bankWithdraw(creator.getName(),
+            EconomyResponse response = this.dataManager.getEconomy().withdrawPlayer(creator,
                     this.dataManager.getPollCost());
             if (response.type != EconomyResponse.ResponseType.SUCCESS) { // Couldn't charge, cancel the poll
                 FusionUtilities.sendConsoleWarn("Couldn't charge $" + this.dataManager.getPollCost() + " from " +
@@ -53,12 +54,12 @@ public class PollInstance implements Runnable
         
         this.type = type;
         this.creator = creator;
-        if (this.type == PollType.CUSTOM)
-            this.question = question;
-        else
+        this.question = question;
+        if (this.type != PollType.CUSTOM)
             world = creator.getWorld();
         
         this.yesVotes = new ArrayList<>();
+        this.yesVotes.add(creator);
         this.noVotes = new ArrayList<>();
         
         this.broadcastPoll();
@@ -80,6 +81,7 @@ public class PollInstance implements Runnable
             }
             TextComponent worldNameText = new TextComponent(this.world.getName());
             worldNameText.setColor(ChatColor.YELLOW);
+            broadcast[0].addExtra(worldNameText);
             broadcast[0].addExtra(" to ");
             TextComponent questionText = new TextComponent(this.question);
             questionText.setColor(ChatColor.YELLOW);
@@ -102,7 +104,7 @@ public class PollInstance implements Runnable
         voteNoText.setColor(ChatColor.RED);
         voteNoText.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/poll no"));
         broadcast[1].addExtra(voteNoText);
-        
+
         FusionUtilities.broadcast(broadcast[0]);
         FusionUtilities.broadcast(broadcast[1]);
     }
@@ -145,9 +147,10 @@ public class PollInstance implements Runnable
             }
         } else {
             if (type != PollType.CUSTOM && this.dataManager.isEconomyEnabled() &&
-                    !creator.hasPermission(FusionUtilities.PERMISSION_FREEPOLL)) {
+                    !creator.hasPermission(FusionUtilities.PERMISSION_FREEPOLL) &&
+                    (this.dataManager.getPollCost() > 0)) {
                 // Refund poll cost
-                EconomyResponse response = this.dataManager.getEconomy().bankDeposit(creator.getName(),
+                EconomyResponse response = this.dataManager.getEconomy().depositPlayer(creator,
                         this.dataManager.getPollCost());
                 if (response.type != EconomyResponse.ResponseType.SUCCESS) { // Couldn't charge, cancel the poll
                     FusionUtilities.sendConsoleWarn("Couldn't refund $" + this.dataManager.getPollCost() + " to " +
@@ -155,7 +158,10 @@ public class PollInstance implements Runnable
                     TextComponent error = new TextComponent("An internal error occurred. Poll cost NOT refunded.");
                     error.setColor(ChatColor.RED);
                     FusionUtilities.sendUserMessage(creator, error);
-                    return;
+                } else {
+                    TextComponent succ = new TextComponent("Poll cost refunded.");
+                    succ.setColor(ChatColor.YELLOW);
+                    FusionUtilities.sendUserMessage(creator, succ);
                 }
             }
         }
@@ -175,16 +181,16 @@ public class PollInstance implements Runnable
             broadcast.addExtra("fails! ");
         }
         
-        broadcast.addExtra("(" + yesVotes.size() + " - " + noVotes.size() + ")");
+        broadcast.addExtra("(" + yesVotes.size() + " - " + noVotes.size() + ") ");
         
         if (yesVotes.size() > noVotes.size()) {
             if (type == PollType.WEATHER) {
-                TextComponent weather = new TextComponent("Weather in " + this.world + " changed to " + this.question + ".");
+                TextComponent weather = new TextComponent("Weather in " + this.world.getName() + " changed to " + this.question + ".");
                 weather.setColor(ChatColor.GREEN);
                 weather.setItalic(true);
                 broadcast.addExtra(weather);
             } else if (type == PollType.TIME) {
-                TextComponent time = new TextComponent("Time in " + this.world + " changed to " + this.question + ".");
+                TextComponent time = new TextComponent("Time in " + this.world.getName() + " changed to " + this.question + ".");
                 time.setColor(ChatColor.GREEN);
                 time.setItalic(true);
                 broadcast.addExtra(time);
