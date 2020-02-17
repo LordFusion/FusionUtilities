@@ -6,6 +6,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Set;
 
 public class DataManager
 {
@@ -53,25 +54,30 @@ public class DataManager
         }
     
         // Make sure the file is complete
+        Set<String> configKeys = config.getKeys(false);
         boolean fileChanged = false;
-        if (!config.getKeys(false).contains(MT_RELOAD)) {
+        if (!configKeys.contains(MT_RELOAD)) {
             config.set(MT_RELOAD, false);
             fileChanged = true;
         }
-        if (!config.getKeys(false).contains(TOWNY_CMD)) {
+        if (!configKeys.contains(TOWNY_CMD)) {
             config.set(TOWNY_CMD, false);
             fileChanged = true;
         }
-        if (!config.getKeys(false).contains(VOTE_CMD)) {
+        if (!configKeys.contains(VOTE_CMD)) {
             config.set(VOTE_CMD, false);
             fileChanged = true;
         }
-        if (!config.getKeys(false).contains(DONATE_CMD)) {
+        if (!configKeys.contains(DONATE_CMD)) {
             config.set(DONATE_CMD, false);
             fileChanged = true;
         }
-        if (!config.getKeys(false).contains(POLL_CMD)) {
+        if (!configKeys.contains(POLL_CMD)) {
             config.set(POLL_CMD, false);
+            fileChanged = true;
+        }
+        if (!configKeys.contains(POLL_COST)) {
+            config.set(POLL_COST, 0.0);
             fileChanged = true;
         }
         
@@ -96,6 +102,7 @@ public class DataManager
         this.config.set(VOTE_CMD, false);
         this.config.set(DONATE_CMD, false);
         this.config.set(POLL_CMD, false);
+        this.config.get(POLL_COST, 0.0);
         FusionUtilities.sendConsoleInfo("Default config restored.");
         // Save
         this.saveConfigFile();
