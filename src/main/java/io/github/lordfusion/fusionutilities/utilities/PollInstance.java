@@ -159,6 +159,8 @@ public class PollInstance implements Runnable
                     error.setColor(ChatColor.RED);
                     FusionUtilities.sendUserMessage(creator, error);
                 } else {
+                    FusionUtilities.sendConsoleInfo("Refunded $" + this.dataManager.getPollCost() + " to " +
+                            creator.getName() + " after failed poll.");
                     TextComponent succ = new TextComponent("Poll cost refunded.");
                     succ.setColor(ChatColor.YELLOW);
                     FusionUtilities.sendUserMessage(creator, succ);
