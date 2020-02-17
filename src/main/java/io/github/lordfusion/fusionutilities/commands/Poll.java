@@ -104,16 +104,14 @@ public class Poll implements CommandExecutor
                     this.instance = new PollInstance(PollInstance.PollType.CUSTOM, ((Player)sender).getPlayer(), q.toString());
                 }
             }
-        } else if (instance.isRunning()) {
-            FusionUtilities.sendUserMessage(sender, MSG_POLL_RUNNING);
+        } else if (args[0].equalsIgnoreCase("yes")) {
+            this.instance.voteYes(((Player) sender).getPlayer());
+            FusionUtilities.sendUserMessage(sender, MSG_POLL_YES);
+        } else if (args[0].equalsIgnoreCase("no")) {
+            this.instance.voteNo(((Player) sender).getPlayer());
+            FusionUtilities.sendUserMessage(sender, MSG_POLL_NO);
         } else {
-            if (args[0].equalsIgnoreCase("yes")) {
-                this.instance.voteYes(((Player) sender).getPlayer());
-                FusionUtilities.sendUserMessage(sender, MSG_POLL_YES);
-            } else if (args[0].equalsIgnoreCase("no")) {
-                this.instance.voteNo(((Player) sender).getPlayer());
-                FusionUtilities.sendUserMessage(sender, MSG_POLL_NO);
-            }
+            FusionUtilities.sendUserMessage(sender, MSG_POLL_RUNNING);
         }
         
         return true;
