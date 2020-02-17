@@ -1,5 +1,6 @@
 package io.github.lordfusion.fusionutilities.commands;
 
+import io.github.lordfusion.fusionutilities.DataManager;
 import io.github.lordfusion.fusionutilities.FusionUtilities;
 import io.github.lordfusion.fusionutilities.utilities.PollInstance;
 import net.md_5.bungee.api.ChatColor;
@@ -12,9 +13,10 @@ import org.bukkit.entity.Player;
 public class Poll implements CommandExecutor
 {
     private PollInstance instance;
+    private DataManager dataManager;
     
     private static TextComponent MSG_NO_POLL, MSG_POLL_RUNNING, MSG_POLL_YES, MSG_POLL_NO, HELP_WEATHER, HELP_TIME,
-            HELP_CUSTOM, MSG_TOO_LONG;
+            HELP_CUSTOM, MSG_TOO_LONG, MSG_CANNOT_AFFORD;
     private static TextComponent[] ALL_HELP;
     
     public Poll()
@@ -29,6 +31,8 @@ public class Poll implements CommandExecutor
         setupMsgHelpWeather();
         setupMsgHelpTime();
         setupMsgHelpCustom();
+        
+        this.dataManager = FusionUtilities.getInstance().getDataManager();
     }
     
     /**
@@ -61,48 +65,56 @@ public class Poll implements CommandExecutor
                 FusionUtilities.sendUserMessage(sender, MSG_NO_POLL);
                 return true;
             }
-            if (args[0].equalsIgnoreCase("weather")) {
-                // Start a weather poll?
-                switch (args[1].toLowerCase()) {
-                    case "sunny":
-                    case "sun":
-                    case "clear":
-                        this.instance = new PollInstance(PollInstance.PollType.WEATHER, ((Player)sender).getPlayer(), "SUNNY");
-                        break;
-                    case "rain":
-                        this.instance = new PollInstance(PollInstance.PollType.WEATHER, ((Player)sender).getPlayer(), "RAIN");
-                        break;
-                    case "storm":
-                    case "thunder":
-                        this.instance = new PollInstance(PollInstance.PollType.WEATHER, ((Player)sender).getPlayer(), "STORM");
-                        break;
-                    default:
-                        FusionUtilities.sendUserMessage(sender, HELP_WEATHER);
-                        break;
-                }
-            } else if (args[0].equalsIgnoreCase("time")) {
-                // Start a time poll?
-                switch (args[1].toLowerCase()) {
-                    case "day":
-                        this.instance = new PollInstance(PollInstance.PollType.TIME, ((Player)sender).getPlayer(), "DAY");
-                        break;
-                    case "night":
-                        this.instance = new PollInstance(PollInstance.PollType.TIME, ((Player)sender).getPlayer(), "NIGHT");
-                        break;
-                    default:
-                        FusionUtilities.sendUserMessage(sender, HELP_TIME);
-                        break;
+            // Make sure they can afford a poll
+            
+            if (this.dataManager.isEconomyEnabled() &&
+                    (this.dataManager.getEconomy().bankBalance(sender.getName()).balance
+                            >= this.dataManager.getPollCost())) {
+                if (args[0].equalsIgnoreCase("weather")) {
+                    // Start a weather poll?
+                    switch (args[1].toLowerCase()) {
+                        case "sunny":
+                        case "sun":
+                        case "clear":
+                            this.instance = new PollInstance(PollInstance.PollType.WEATHER, ((Player)sender).getPlayer(), "SUNNY");
+                            break;
+                        case "rain":
+                            this.instance = new PollInstance(PollInstance.PollType.WEATHER, ((Player)sender).getPlayer(), "RAIN");
+                            break;
+                        case "storm":
+                        case "thunder":
+                            this.instance = new PollInstance(PollInstance.PollType.WEATHER, ((Player)sender).getPlayer(), "STORM");
+                            break;
+                        default:
+                            FusionUtilities.sendUserMessage(sender, HELP_WEATHER);
+                            break;
+                    }
+                } else if (args[0].equalsIgnoreCase("time")) {
+                    // Start a time poll?
+                    switch (args[1].toLowerCase()) {
+                        case "day":
+                            this.instance = new PollInstance(PollInstance.PollType.TIME, ((Player)sender).getPlayer(), "DAY");
+                            break;
+                        case "night":
+                            this.instance = new PollInstance(PollInstance.PollType.TIME, ((Player)sender).getPlayer(), "NIGHT");
+                            break;
+                        default:
+                            FusionUtilities.sendUserMessage(sender, HELP_TIME);
+                            break;
+                    }
+                } else {
+                    // Custom poll?
+                    StringBuilder q = new StringBuilder();
+                    for (int i=0; i<args.length; i++)
+                        q.append(args[i]);
+                    if (q.length() > 80) {
+                        FusionUtilities.sendUserMessage(sender, MSG_TOO_LONG);
+                    } else {
+                        this.instance = new PollInstance(PollInstance.PollType.CUSTOM, ((Player)sender).getPlayer(), q.toString());
+                    }
                 }
             } else {
-                // Custom poll?
-                StringBuilder q = new StringBuilder();
-                for (int i=0; i<args.length; i++)
-                    q.append(args[i]);
-                if (q.length() > 80) {
-                    FusionUtilities.sendUserMessage(sender, MSG_TOO_LONG);
-                } else {
-                    this.instance = new PollInstance(PollInstance.PollType.CUSTOM, ((Player)sender).getPlayer(), q.toString());
-                }
+                // todo: msg_cannot_afford
             }
         } else if (args[0].equalsIgnoreCase("yes")) {
             this.instance.voteYes(((Player) sender).getPlayer());
