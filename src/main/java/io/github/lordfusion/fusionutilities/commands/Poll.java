@@ -10,6 +10,9 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+// todo: /poll close - Close voting early, but still tally and execute the votes
+// todo: /poll stop - Force-stop the poll, do not pass go, do not collect votes.
+
 public class Poll implements CommandExecutor
 {
     private PollInstance instance;

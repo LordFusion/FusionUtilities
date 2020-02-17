@@ -13,6 +13,8 @@ import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 
+// todo: make polls only show up and be voteable for people in the same world.
+
 public class PollInstance implements Runnable
 {
     public enum PollType { TIME, WEATHER, CUSTOM }
