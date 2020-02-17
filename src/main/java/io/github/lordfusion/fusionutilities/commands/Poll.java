@@ -69,10 +69,10 @@ public class Poll implements CommandExecutor
             }
             // Make sure they can afford a poll
             
-            if ((this.dataManager.isEconomyEnabled()) ||
-                    (this.dataManager.isEconomyEnabled() &&
-                            (this.dataManager.getEconomy().bankBalance(sender.getName()).balance >= this.dataManager.getPollCost()
-                                    || !sender.hasPermission(FusionUtilities.PERMISSION_FREEPOLL)))) {
+            
+            if (!this.dataManager.isEconomyEnabled() ||
+                    ((sender.hasPermission(FusionUtilities.PERMISSION_FREEPOLL) || this.dataManager.getEconomy()
+                            .getBalance(((Player) sender).getPlayer()) >= this.dataManager.getPollCost()))) {
                 if (args[0].equalsIgnoreCase("weather")) {
                     // Start a weather poll?
                     switch (args[1].toLowerCase()) {
