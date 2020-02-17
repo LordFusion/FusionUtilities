@@ -52,7 +52,7 @@ public class Poll implements CommandExecutor
         }
         
         if (args.length == 0 || args[0].equalsIgnoreCase("help")) {
-            // Todo: Help menu
+            FusionUtilities.sendUserMessages(sender, ALL_HELP);
             return true;
         }
         
