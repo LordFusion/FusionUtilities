@@ -175,7 +175,7 @@ public class PollInstance implements Runnable
             broadcast.addExtra("fails! ");
         }
         
-        broadcast.addExtra("(" + yesVotes + " - " + noVotes + ")");
+        broadcast.addExtra("(" + yesVotes.size() + " - " + noVotes.size() + ")");
         
         if (yesVotes.size() > noVotes.size()) {
             if (type == PollType.WEATHER) {
