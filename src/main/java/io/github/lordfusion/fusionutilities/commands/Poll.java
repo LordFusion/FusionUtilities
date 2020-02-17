@@ -13,7 +13,8 @@ public class Poll implements CommandExecutor
 {
     private PollInstance instance;
     
-    private static TextComponent MSG_NO_POLL, MSG_POLL_RUNNING, MSG_POLL_YES, MSG_POLL_NO, HELP_WEATHER, HELP_TIME, MSG_TOO_LONG;
+    private static TextComponent MSG_NO_POLL, MSG_POLL_RUNNING, MSG_POLL_YES, MSG_POLL_NO, HELP_WEATHER, HELP_TIME,
+            HELP_CUSTOM, MSG_TOO_LONG;
     private static TextComponent[] ALL_HELP;
     
     public Poll()
@@ -23,8 +24,11 @@ public class Poll implements CommandExecutor
         setupMsgPollYes();
         setupMsgPollNo();
         setupMsgTooLong();
+        
+        ALL_HELP = new TextComponent[3];
         setupMsgHelpWeather();
         setupMsgHelpTime();
+        setupMsgHelpCustom();
     }
     
     /**
@@ -100,15 +104,15 @@ public class Poll implements CommandExecutor
                     this.instance = new PollInstance(PollInstance.PollType.CUSTOM, ((Player)sender).getPlayer(), q.toString());
                 }
             }
+        } else if (instance.isRunning()) {
+            FusionUtilities.sendUserMessage(sender, MSG_POLL_RUNNING);
         } else {
             if (args[0].equalsIgnoreCase("yes")) {
-                this.instance.voteYes();
+                this.instance.voteYes(((Player) sender).getPlayer());
                 FusionUtilities.sendUserMessage(sender, MSG_POLL_YES);
             } else if (args[0].equalsIgnoreCase("no")) {
-                this.instance.voteNo();
+                this.instance.voteNo(((Player) sender).getPlayer());
                 FusionUtilities.sendUserMessage(sender, MSG_POLL_NO);
-            } else {
-                FusionUtilities.sendUserMessage(sender, MSG_NO_POLL);
             }
         }
         
@@ -144,10 +148,20 @@ public class Poll implements CommandExecutor
     }
     private void setupMsgHelpWeather()
     {
-    
+        HELP_WEATHER = new TextComponent("/poll create weather <SUN|RAIN|THUNDER>");
+        HELP_WEATHER.setColor(ChatColor.DARK_AQUA);
+        ALL_HELP[0] = HELP_WEATHER;
     }
     private void setupMsgHelpTime()
     {
-    
+        HELP_TIME = new TextComponent("/poll create time <DAY|NIGHT>");
+        HELP_TIME.setColor(ChatColor.DARK_AQUA);
+        ALL_HELP[1] = HELP_TIME;
+    }
+    private void setupMsgHelpCustom()
+    {
+        HELP_CUSTOM = new TextComponent("/poll create <QUESTION>");
+        HELP_CUSTOM.setColor(ChatColor.DARK_AQUA);
+        ALL_HELP[2] = HELP_CUSTOM;
     }
 }

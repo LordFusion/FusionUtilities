@@ -1,5 +1,7 @@
 package io.github.lordfusion.fusionutilities;
 
+import net.milkbowl.vault.economy.Economy;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
@@ -17,6 +19,11 @@ public class DataManager
     private static final String VOTE_CMD = "Vote Command";
     private static final String DONATE_CMD = "Donate Command";
     private static final String POLL_CMD = "Poll Command";
+    private static final String POLL_COST = "Poll Cost";
+    
+    // Integrations
+    private boolean economyEnabled;
+    private Economy economy;
     
     /**
      * The DataManager... Manages data. All of it. Any file-related data this plugin needs, here it is. Right here.
@@ -24,8 +31,12 @@ public class DataManager
      */
     DataManager(String pluginDataFolder)
     {
+        // Configurations
         dataFolderPath = pluginDataFolder;
         this.loadConfigFile();
+        
+        // Integrations
+        this.economyEnabled = checkEconomyIntegration();
     }
     
     /**
@@ -153,4 +164,48 @@ public class DataManager
     {
         this.config.set(POLL_CMD, b);
     }
+    
+    public void setPollCost(double d)
+    {
+        this.config.set(POLL_COST, d);
+    }
+    public double getPollCost()
+    {
+        if (this.config != null && this.config.contains(POLL_COST))
+            return this.config.getDouble(POLL_COST, 0.0);
+        return 0.0;
+    }
+    
+    // Integrations ************************************************************************************ Integrations //
+    
+    /**
+     * Checks if any economy plugins are present on the server.
+     * Currently checks for: Vault
+     * @return True if an economy plugin is found, false otherwise.
+     */
+    private boolean checkEconomyIntegration()
+    {
+        FusionUtilities.sendConsoleInfo("Checking for economy integration...");
+        if (Bukkit.getPluginManager().isPluginEnabled("Vault")) {
+            FusionUtilities.sendConsoleInfo("Vault integration found!");
+            this.economy = Bukkit.getServer().getServicesManager().getRegistration(Economy.class).getProvider();
+            return true;
+        } else {
+            FusionUtilities.sendConsoleWarn("No economy integrations found.");
+            this.economy = null;
+            return false;
+        }
+    }
+    public boolean isEconomyEnabled()
+    {
+        return this.economyEnabled;
+    }
+    public Economy getEconomy()
+    {
+        if (this.isEconomyEnabled())
+            return this.economy;
+        return null;
+    }
+    
+    
 }

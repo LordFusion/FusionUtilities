@@ -94,4 +94,11 @@ public final class FusionUtilities extends JavaPlugin
         for (TextComponent msg : msgs)
             sendUserMessage(sender, msg);
     }
+    
+    public static void broadcast(TextComponent msg)
+    {
+        for (Player player : Bukkit.getOnlinePlayers())
+            if (player.isOnline())
+                player.spigot().sendMessage(msg);
+    }
 }

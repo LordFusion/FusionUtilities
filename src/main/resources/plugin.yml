@@ -3,6 +3,8 @@ version: "1.02"
 main: io.github.lordfusion.fusionutilities.FusionUtilities
 prefix: FusionUtilities
 authors: [Lord_Fusion]
+softdepend:
+  - Vault
 description: Miscellaneous garbage.
 website: lordfusion.github.io
 

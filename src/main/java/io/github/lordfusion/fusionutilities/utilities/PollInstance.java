@@ -1,28 +1,54 @@
 package io.github.lordfusion.fusionutilities.utilities;
 
+import io.github.lordfusion.fusionutilities.DataManager;
 import io.github.lordfusion.fusionutilities.FusionUtilities;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.TextComponent;
+import net.milkbowl.vault.economy.EconomyResponse;
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
+
+import java.util.ArrayList;
 
 public class PollInstance implements Runnable
 {
     public enum PollType { TIME, WEATHER, CUSTOM }
     
-    private int yesVotes, noVotes;
+    private ArrayList<OfflinePlayer> yesVotes, noVotes;
     private PollType type;
     private boolean isRunning;
     private String question;
     private Player creator;
     private World world;
     
+    private DataManager dataManager;
+    
+    /**
+     * Creates a poll instance that will run a poll to the server, accepting votes until a scheduled close point.
+     * Creator must have enough money to afford the poll cost.
+     * @param type     Poll type (CUSTOM / TIME / WEATHER)
+     * @param creator  Player that created the poll
+     * @param question Question or poll details associated with the poll
+     */
     public PollInstance(PollType type, Player creator, String question)
     {
-        if (!creator.hasPermission(FusionUtilities.PERMISSION_FREEPOLL)) {
-            // Todo: Charge poll creation cost
+        this.dataManager = FusionUtilities.getInstance().getDataManager();
+        
+        if (this.dataManager.isEconomyEnabled() && !creator.hasPermission(FusionUtilities.PERMISSION_FREEPOLL)) {
+            // Charge poll cost
+            EconomyResponse response = this.dataManager.getEconomy().bankWithdraw(creator.getName(),
+                    this.dataManager.getPollCost());
+            if (response.type != EconomyResponse.ResponseType.SUCCESS) { // Couldn't charge, cancel the poll
+                FusionUtilities.sendConsoleWarn("Couldn't charge $" + this.dataManager.getPollCost() + " from " +
+                        creator.getName() + " to create poll.");
+                TextComponent error = new TextComponent("An internal error occurred. Poll canceled.");
+                error.setColor(ChatColor.RED);
+                FusionUtilities.sendUserMessage(creator, error);
+                return;
+            }
         }
         
         this.type = type;
@@ -31,6 +57,9 @@ public class PollInstance implements Runnable
             this.question = question;
         else
             world = creator.getWorld();
+        
+        this.yesVotes = new ArrayList<>();
+        this.noVotes = new ArrayList<>();
         
         this.broadcastPoll();
         Bukkit.getScheduler().runTaskLater(FusionUtilities.getInstance(), this, 2400);
@@ -73,6 +102,9 @@ public class PollInstance implements Runnable
         voteNoText.setColor(ChatColor.RED);
         voteNoText.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/poll no"));
         broadcast[1].addExtra(voteNoText);
+        
+        FusionUtilities.broadcast(broadcast[0]);
+        FusionUtilities.broadcast(broadcast[1]);
     }
     
     /**
@@ -92,7 +124,7 @@ public class PollInstance implements Runnable
         this.isRunning = false;
         broadcastResults();
         
-        if (yesVotes > noVotes) {
+        if (yesVotes.size() > noVotes.size()) {
             if (type == PollType.WEATHER) {
                 if (question.equalsIgnoreCase("STORM")) {
                     world.setStorm(true);
@@ -112,16 +144,30 @@ public class PollInstance implements Runnable
                     world.setTime(14000);
             }
         } else {
-            if (type != PollType.CUSTOM && !this.creator.hasPermission(FusionUtilities.PERMISSION_FREEPOLL)) {
-                // Todo: Refund poll cost
+            if (type != PollType.CUSTOM && this.dataManager.isEconomyEnabled() &&
+                    !creator.hasPermission(FusionUtilities.PERMISSION_FREEPOLL)) {
+                // Refund poll cost
+                EconomyResponse response = this.dataManager.getEconomy().bankDeposit(creator.getName(),
+                        this.dataManager.getPollCost());
+                if (response.type != EconomyResponse.ResponseType.SUCCESS) { // Couldn't charge, cancel the poll
+                    FusionUtilities.sendConsoleWarn("Couldn't refund $" + this.dataManager.getPollCost() + " to " +
+                            creator.getName() + " after failed poll.");
+                    TextComponent error = new TextComponent("An internal error occurred. Poll cost NOT refunded.");
+                    error.setColor(ChatColor.RED);
+                    FusionUtilities.sendUserMessage(creator, error);
+                    return;
+                }
             }
         }
     }
     
+    /**
+     * Sends a broadcast to all players to display the results of the finished poll.
+     */
     private void broadcastResults()
     {
         TextComponent broadcast = new TextComponent("Poll ");
-        if (yesVotes > noVotes) {
+        if (yesVotes.size() > noVotes.size()) {
             broadcast.setColor(ChatColor.GREEN);
             broadcast.addExtra("passes! ");
         } else {
@@ -131,7 +177,7 @@ public class PollInstance implements Runnable
         
         broadcast.addExtra("(" + yesVotes + " - " + noVotes + ")");
         
-        if (yesVotes > noVotes) {
+        if (yesVotes.size() > noVotes.size()) {
             if (type == PollType.WEATHER) {
                 TextComponent weather = new TextComponent("Weather in " + this.world + " changed to " + this.question + ".");
                 weather.setColor(ChatColor.GREEN);
@@ -149,23 +195,54 @@ public class PollInstance implements Runnable
                 broadcast.addExtra(questionMsg);
             }
         }
+        
+        FusionUtilities.broadcast(broadcast);
     }
     
+    /**
+     * Check if there is a poll currently running.
+     * @return True if poll is running, false otherwise.
+     */
     public boolean isRunning() {
         return isRunning;
     }
-    public int getYesVotes() {
-        return yesVotes;
+    
+    /**
+     * Trims the ArrayList into an Array, to return the names of all players who voted yes on the most recent poll.
+     * @return Player names of players who voted yes
+     */
+    public OfflinePlayer[] getYesVotes() {
+        return yesVotes.toArray(new OfflinePlayer[0]);
     }
-    public int getNoVotes() {
-        return noVotes;
+    /**
+     * Trims the ArrayList into an Array, to return the names of all players who voted no on the most recent poll.
+     * @return Player names of players who voted no
+     */
+    public OfflinePlayer[] getNoVotes() {
+        return noVotes.toArray(new OfflinePlayer[0]);
     }
-    public void voteYes()
+    
+    /**
+     * Votes yes on the current poll. May throw an error if there is no poll running.
+     * Removes the vote from "noVotes" if they already voted. Does not duplicate-vote.
+     * @param voter Voting player
+     */
+    public void voteYes(OfflinePlayer voter)
     {
-        this.yesVotes++;
+        this.noVotes.remove(voter);
+        if (!this.yesVotes.contains(voter)) // Avoid duplicates
+            this.yesVotes.add(voter);
     }
-    public void voteNo()
+    
+    /**
+     * Votes no on the current poll. May throw an error if there is no poll running.
+     * Removes the vote from "yesVotes" if they already voted. Does not duplicate-vote.
+     * @param voter Voting player
+     */
+    public void voteNo(OfflinePlayer voter)
     {
-        this.noVotes++;
+        this.yesVotes.remove(voter);
+        if (!this.noVotes.contains(voter)) // Avoid duplicates
+            this.noVotes.add(voter);
     }
 }
