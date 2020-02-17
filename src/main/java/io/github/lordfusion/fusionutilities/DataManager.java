@@ -16,6 +16,7 @@ public class DataManager
     private static final String TOWNY_CMD = "Towny Assistance Command";
     private static final String VOTE_CMD = "Vote Command";
     private static final String DONATE_CMD = "Donate Command";
+    private static final String POLL_CMD = "Poll Command";
     
     /**
      * The DataManager... Manages data. All of it. Any file-related data this plugin needs, here it is. Right here.
@@ -58,6 +59,10 @@ public class DataManager
             config.set(DONATE_CMD, false);
             fileChanged = true;
         }
+        if (!config.getKeys(false).contains(POLL_CMD)) {
+            config.set(POLL_CMD, false);
+            fileChanged = true;
+        }
         
         // Save the config if we added a missing default value
         if (fileChanged)
@@ -79,6 +84,7 @@ public class DataManager
         this.config.set(TOWNY_CMD, false);
         this.config.set(VOTE_CMD, false);
         this.config.set(DONATE_CMD, false);
+        this.config.set(POLL_CMD, false);
         FusionUtilities.sendConsoleInfo("Default config restored.");
         // Save
         this.saveConfigFile();
@@ -136,5 +142,15 @@ public class DataManager
     public void setDonateCommand(boolean b)
     {
         this.config.set(DONATE_CMD, b);
+    }
+    public boolean doPollCommand()
+    {
+        if (this.config != null && this.config.contains(POLL_CMD))
+            return this.config.getBoolean(POLL_CMD, false);
+        return false;
+    }
+    public void setPollCommand(boolean b)
+    {
+        this.config.set(POLL_CMD, b);
     }
 }

@@ -1,6 +1,7 @@
 package io.github.lordfusion.fusionutilities;
 
 import io.github.lordfusion.fusionutilities.commands.Donate;
+import io.github.lordfusion.fusionutilities.commands.Poll;
 import io.github.lordfusion.fusionutilities.commands.TownyAssistance;
 import io.github.lordfusion.fusionutilities.commands.Vote;
 import io.github.lordfusion.fusionutilities.utilities.MinetweakerReloader;
@@ -15,12 +16,16 @@ public final class FusionUtilities extends JavaPlugin
     static final String CONSOLE_PREFIX = "[Fusion Utilities] ";
     
     private DataManager dataManager;
+    private static FusionUtilities INSTANCE;
+    
+    public static String PERMISSION_FREEPOLL = "fusion.utilities.poll.free";
     
     @Override
     public void onEnable()
     {
         sendConsoleInfo("Time to do nothing useful!");
         this.dataManager = new DataManager(this.getDataFolder().getAbsolutePath());
+        INSTANCE = this;
         
         // Minetweaker Reloader
         if (this.dataManager.doMinetweakerReload())
@@ -37,12 +42,25 @@ public final class FusionUtilities extends JavaPlugin
         // Donate Command
         if (this.dataManager.doDonateCommand())
             getCommand("fusion-donate").setExecutor(new Donate());
+        
+        // Poll Command
+        if (this.dataManager.doPollCommand())
+            getCommand("fusion-poll").setExecutor(new Poll());
     }
     
     @Override
     public void onDisable()
     {
     
+    }
+    
+    public static FusionUtilities getInstance()
+    {
+        return INSTANCE;
+    }
+    public DataManager getDataManager()
+    {
+        return this.dataManager;
     }
     
     /**
