@@ -57,7 +57,7 @@ public class Poll implements CommandExecutor
         }
         
         if (instance == null || !instance.isRunning()) { // No poll running
-            if (args[0].equalsIgnoreCase("yes") || args[0].equalsIgnoreCase("no") || args.length < 2) {
+            if (args[0].equalsIgnoreCase("yes") || args[0].equalsIgnoreCase("no")) {
                 FusionUtilities.sendUserMessage(sender, MSG_NO_POLL);
                 return true;
             }
