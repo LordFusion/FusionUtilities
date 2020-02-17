@@ -21,6 +21,8 @@ public class Poll implements CommandExecutor
     
     public Poll()
     {
+        this.dataManager = FusionUtilities.getInstance().getDataManager();
+        
         setupMsgNoPoll();
         setupMsgPollRunning();
         setupMsgPollYes();
@@ -32,8 +34,6 @@ public class Poll implements CommandExecutor
         setupMsgHelpWeather();
         setupMsgHelpTime();
         setupMsgHelpCustom();
-        
-        this.dataManager = FusionUtilities.getInstance().getDataManager();
     }
     
     /**
