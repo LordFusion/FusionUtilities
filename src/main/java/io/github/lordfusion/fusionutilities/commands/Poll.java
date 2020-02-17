@@ -16,7 +16,7 @@ public class Poll implements CommandExecutor
     private DataManager dataManager;
     
     private static TextComponent MSG_NO_POLL, MSG_POLL_RUNNING, MSG_POLL_YES, MSG_POLL_NO, HELP_WEATHER, HELP_TIME,
-            HELP_CUSTOM, MSG_TOO_LONG, MSG_CANNOT_AFFORD;
+            HELP_CUSTOM, MSG_TOO_LONG, MSG_CANNOT_AFFORD, MSG_CHRG_POLL;
     private static TextComponent[] ALL_HELP;
     
     public Poll()
@@ -29,6 +29,7 @@ public class Poll implements CommandExecutor
         setupMsgPollNo();
         setupMsgTooLong();
         setupMsgCannotAfford();
+        setupMsgChargedForPoll();
         
         ALL_HELP = new TextComponent[3];
         setupMsgHelpWeather();
@@ -68,9 +69,9 @@ public class Poll implements CommandExecutor
             }
             // Make sure they can afford a poll
             
-            if (this.dataManager.isEconomyEnabled() &&
+            if ((this.dataManager.isEconomyEnabled()) || (this.dataManager.isEconomyEnabled() &&
                     (this.dataManager.getEconomy().bankBalance(sender.getName()).balance
-                            >= this.dataManager.getPollCost())) {
+                            >= this.dataManager.getPollCost()))) {
                 if (args[0].equalsIgnoreCase("weather")) {
                     // Start a weather poll?
                     switch (args[1].toLowerCase()) {
@@ -88,7 +89,7 @@ public class Poll implements CommandExecutor
                             break;
                         default:
                             FusionUtilities.sendUserMessage(sender, HELP_WEATHER);
-                            break;
+                            return true;
                     }
                 } else if (args[0].equalsIgnoreCase("time")) {
                     // Start a time poll?
@@ -101,7 +102,7 @@ public class Poll implements CommandExecutor
                             break;
                         default:
                             FusionUtilities.sendUserMessage(sender, HELP_TIME);
-                            break;
+                            return true;
                     }
                 } else {
                     // Custom poll?
@@ -110,10 +111,16 @@ public class Poll implements CommandExecutor
                         q.append(args[i]);
                     if (q.length() > 80) {
                         FusionUtilities.sendUserMessage(sender, MSG_TOO_LONG);
+                        return true;
                     } else {
                         this.instance = new PollInstance(PollInstance.PollType.CUSTOM, ((Player)sender).getPlayer(), q.toString());
                     }
                 }
+                
+                if (this.dataManager.isEconomyEnabled()) {
+                    FusionUtilities.sendUserMessage(sender, MSG_CHRG_POLL);
+                }
+                
             } else {
                 FusionUtilities.sendConsoleInfo(sender.getName() + " could not afford to start a poll.");
                 FusionUtilities.sendUserMessage(sender, MSG_CANNOT_AFFORD);
@@ -164,6 +171,11 @@ public class Poll implements CommandExecutor
         MSG_CANNOT_AFFORD = new TextComponent("You cannot afford to start a poll ($" + this.dataManager.getPollCost()
                 + ")!");
         MSG_CANNOT_AFFORD.setColor(ChatColor.RED);
+    }
+    private void setupMsgChargedForPoll()
+    {
+        MSG_CHRG_POLL = new TextComponent("You were charged to start this poll: $");
+        MSG_CANNOT_AFFORD.setColor(ChatColor.YELLOW);
     }
     private void setupMsgHelpWeather()
     {
