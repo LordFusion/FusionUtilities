@@ -114,6 +114,10 @@ public class Poll implements CommandExecutor
                             }
                             break;
                         case "create":
+                            if (args.length < 2) {
+                                FusionUtilities.sendUserMessage(sender, HELP_CUSTOM);
+                                return true;
+                            }
                             String q = IntStream.range(1, args.length).mapToObj(i -> args[i] + ' ').collect(Collectors.joining());
                             if (q.length() > 80) {
                                 FusionUtilities.sendUserMessage(sender, MSG_TOO_LONG);
