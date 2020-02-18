@@ -2,7 +2,9 @@ package io.github.lordfusion.fusionutilities;
 
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
+import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 
 import java.io.File;
 import java.io.IOException;
@@ -213,6 +215,13 @@ public class DataManager
             return this.economy;
         return null;
     }
-    
+    public boolean doPollCost()
+    {
+        return this.isEconomyEnabled() && this.getPollCost() > 0;
+    }
+    public boolean chargeForPoll(CommandSender sender)
+    {
+        return sender instanceof Player && doPollCost() && !sender.hasPermission(FusionUtilities.PERMISSION_FREEPOLL);
+    }
     
 }
