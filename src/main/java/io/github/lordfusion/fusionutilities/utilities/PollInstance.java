@@ -10,6 +10,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitTask;
 
 import java.util.ArrayList;
 
@@ -26,6 +27,7 @@ public class PollInstance implements Runnable
     private Player creator;
     private World world;
     
+    private BukkitTask scheduledTask;
     private DataManager dataManager;
     
     /**
@@ -65,7 +67,7 @@ public class PollInstance implements Runnable
         this.noVotes = new ArrayList<>();
         
         this.broadcastPoll();
-        Bukkit.getScheduler().runTaskLater(FusionUtilities.getInstance(), this, 2400);
+        this.scheduledTask = Bukkit.getScheduler().runTaskLater(FusionUtilities.getInstance(), this, 2400);
         isRunning = true;
     }
     
@@ -254,5 +256,16 @@ public class PollInstance implements Runnable
         this.yesVotes.remove(voter);
         if (!this.noVotes.contains(voter)) // Avoid duplicates
             this.noVotes.add(voter);
+    }
+    
+    public void close()
+    {
+        this.scheduledTask.cancel();
+        this.run();
+    }
+    
+    public void kill()
+    {
+        this.scheduledTask.cancel();
     }
 }

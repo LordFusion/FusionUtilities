@@ -22,7 +22,7 @@ public class Poll implements CommandExecutor
     private DataManager dataManager;
     
     private static TextComponent MSG_NO_POLL, MSG_POLL_RUNNING, MSG_POLL_YES, MSG_POLL_NO, HELP_WEATHER, HELP_TIME,
-            HELP_CUSTOM, MSG_TOO_LONG, MSG_CANNOT_AFFORD, MSG_CHRG_POLL, MSG_NO_CMD;
+            HELP_CUSTOM, MSG_TOO_LONG, MSG_CANNOT_AFFORD, MSG_CHRG_POLL, MSG_NO_CMD, MSG_POLL_CLOSED, MSG_POLL_KILLED;
     private static TextComponent[] ALL_HELP;
     
     public Poll()
@@ -37,6 +37,8 @@ public class Poll implements CommandExecutor
         setupMsgCannotAfford();
         setupMsgChargedForPoll();
         setupMsgNoCmd();
+        setupMsgPollClosed();
+        setupMsgPollKilled();
         
         ALL_HELP = new TextComponent[3];
         setupMsgHelpWeather();
@@ -68,7 +70,9 @@ public class Poll implements CommandExecutor
         if (instance == null || !instance.isRunning()) { // Poll is NOT running
             switch (args[0]) {
                 case "yes":
-                case "no": // Attempted vote
+                case "no":
+                case "close":
+                case "stop": // Only run these commands when a poll is active.
                     FusionUtilities.sendUserMessage(sender, MSG_NO_POLL);
                     break;
                 case "weather":
@@ -131,13 +135,23 @@ public class Poll implements CommandExecutor
             }
         } else { // Poll IS running
             switch (args[0]) {
-                case "yes":
+                case "yes": // Vote yes
                     this.instance.voteYes(((Player) sender).getPlayer());
                     FusionUtilities.sendUserMessage(sender, MSG_POLL_YES);
                     break;
-                case "no":
+                case "no": // Vote no
                     this.instance.voteNo(((Player) sender).getPlayer());
                     FusionUtilities.sendUserMessage(sender, MSG_POLL_NO);
+                    break;
+                case "close": // Close the poll, tally and run results
+                    this.instance.close();
+                    FusionUtilities.sendConsoleInfo("Poll was closed early by an admin.");
+                    FusionUtilities.sendUserMessage(sender, MSG_POLL_CLOSED);
+                    break;
+                case "stop": // Close the poll, cancel the results
+                    this.instance.kill();
+                    FusionUtilities.sendConsoleInfo("Poll was killed by an admin.");
+                    FusionUtilities.sendUserMessage(sender, MSG_POLL_KILLED);
                     break;
                 case "weather":
                 case "time":
@@ -194,6 +208,16 @@ public class Poll implements CommandExecutor
     {
         MSG_NO_CMD = new TextComponent("Unrecognized command. Try /poll help");
         MSG_NO_CMD.setColor(ChatColor.RED);
+    }
+    private void setupMsgPollClosed()
+    {
+        MSG_POLL_CLOSED = new TextComponent("Poll was closed.");
+        MSG_POLL_CLOSED.setColor(ChatColor.LIGHT_PURPLE);
+    }
+    private void setupMsgPollKilled()
+    {
+        MSG_POLL_KILLED = new TextComponent("Poll was killed.");
+        MSG_POLL_KILLED.setColor(ChatColor.LIGHT_PURPLE);
     }
     private void setupMsgHelpWeather()
     {
