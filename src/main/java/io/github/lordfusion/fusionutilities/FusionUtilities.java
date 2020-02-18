@@ -7,6 +7,7 @@ import io.github.lordfusion.fusionutilities.commands.Vote;
 import io.github.lordfusion.fusionutilities.utilities.MinetweakerReloader;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
+import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -99,6 +100,13 @@ public final class FusionUtilities extends JavaPlugin
     {
         for (Player player : Bukkit.getOnlinePlayers())
             if (player.isOnline())
+                player.spigot().sendMessage(msg);
+    }
+    
+    public static void worldBroadcast(World world, TextComponent msg)
+    {
+        for (Player player : Bukkit.getOnlinePlayers())
+            if (player.isOnline() && player.getWorld().equals(world))
                 player.spigot().sendMessage(msg);
     }
 }

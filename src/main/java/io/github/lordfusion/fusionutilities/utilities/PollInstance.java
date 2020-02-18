@@ -14,8 +14,6 @@ import org.bukkit.scheduler.BukkitTask;
 
 import java.util.ArrayList;
 
-// todo: make polls only show up and be voteable for people in the same world.
-
 public class PollInstance implements Runnable
 {
     public enum PollType { TIME, WEATHER, CUSTOM }
@@ -109,8 +107,8 @@ public class PollInstance implements Runnable
         voteNoText.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/poll no"));
         broadcast[1].addExtra(voteNoText);
 
-        FusionUtilities.broadcast(broadcast[0]);
-        FusionUtilities.broadcast(broadcast[1]);
+        FusionUtilities.worldBroadcast(world, broadcast[0]);
+        FusionUtilities.worldBroadcast(world, broadcast[1]);
     }
     
     /**
@@ -207,8 +205,8 @@ public class PollInstance implements Runnable
                 broadcast.addExtra(questionMsg);
             }
         }
-        
-        FusionUtilities.broadcast(broadcast);
+    
+        FusionUtilities.worldBroadcast(world, broadcast);
     }
     
     /**
