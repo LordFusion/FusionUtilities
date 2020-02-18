@@ -72,6 +72,14 @@ public class Poll implements CommandExecutor
                 case "stop": // Only run these commands when a poll is active.
                     FusionUtilities.sendUserMessage(sender, MSG_NO_POLL);
                     break;
+                case "results":
+                    if (instance == null) {
+                        FusionUtilities.sendUserMessage(sender, MSG_NO_POLL);
+                        return true;
+                    }
+                    FusionUtilities.sendUserMessage(sender, this.instance.printYesVotes());
+                    FusionUtilities.sendUserMessage(sender, this.instance.printNoVotes());
+                    break;
                 case "weather":
                 case "time":
                 case "create": // Create a poll

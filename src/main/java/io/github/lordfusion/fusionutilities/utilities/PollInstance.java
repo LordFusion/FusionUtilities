@@ -232,6 +232,35 @@ public class PollInstance implements Runnable
         return noVotes.toArray(new OfflinePlayer[0]);
     }
     
+    public TextComponent printYesVotes()
+    {
+        OfflinePlayer[] votes = this.getYesVotes();
+        TextComponent output = new TextComponent("Yes: ");
+        output.setColor(ChatColor.GREEN);
+    
+        for (int i = 0; i < votes.length; i++) {
+            output.addExtra(votes[i].getName());
+            if (i < votes.length - 1)
+                output.addExtra(", ");
+        }
+        
+        return output;
+    }
+    public TextComponent printNoVotes()
+    {
+        OfflinePlayer[] votes = this.getNoVotes();
+        TextComponent output = new TextComponent("No: ");
+        output.setColor(ChatColor.RED);
+    
+        for (int i = 0; i < votes.length; i++) {
+            output.addExtra(votes[i].getName());
+            if (i < votes.length - 1)
+                output.addExtra(", ");
+        }
+    
+        return output;
+    }
+    
     /**
      * Votes yes on the current poll. May throw an error if there is no poll running.
      * Removes the vote from "noVotes" if they already voted. Does not duplicate-vote.
