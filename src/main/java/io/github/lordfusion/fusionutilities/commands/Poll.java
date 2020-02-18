@@ -141,8 +141,11 @@ public class Poll implements CommandExecutor
                     break;
                 case "weather":
                 case "time":
-                case "default":
+                case "create":
                     FusionUtilities.sendUserMessage(sender, MSG_POLL_RUNNING);
+                    break;
+                default: // Unrecognized
+                    FusionUtilities.sendUserMessage(sender, MSG_NO_CMD);
                     break;
             }
         }
