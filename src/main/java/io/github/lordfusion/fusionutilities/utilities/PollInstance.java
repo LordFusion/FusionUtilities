@@ -266,6 +266,7 @@ public class PollInstance implements Runnable
     
     public void kill()
     {
+        this.isRunning = false;
         this.scheduledTask.cancel();
     }
 }
