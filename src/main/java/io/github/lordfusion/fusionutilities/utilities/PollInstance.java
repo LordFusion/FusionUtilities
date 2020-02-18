@@ -107,8 +107,13 @@ public class PollInstance implements Runnable
         voteNoText.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/poll no"));
         broadcast[1].addExtra(voteNoText);
 
-        FusionUtilities.worldBroadcast(world, broadcast[0]);
-        FusionUtilities.worldBroadcast(world, broadcast[1]);
+        if (this.type == PollType.CUSTOM) {
+            FusionUtilities.broadcast(broadcast[0]);
+            FusionUtilities.broadcast(broadcast[1]);
+        } else {
+            FusionUtilities.worldBroadcast(world, broadcast[0]);
+            FusionUtilities.worldBroadcast(world, broadcast[1]);
+        }
     }
     
     /**
@@ -206,7 +211,11 @@ public class PollInstance implements Runnable
             }
         }
     
-        FusionUtilities.worldBroadcast(world, broadcast);
+        if (this.type == PollType.CUSTOM) {
+            FusionUtilities.broadcast(broadcast);
+        } else {
+            FusionUtilities.worldBroadcast(world, broadcast);
+        }
     }
     
     /**
