@@ -10,6 +10,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.command.SimpleCommandMap;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.lang.reflect.Field;
@@ -39,31 +40,37 @@ public final class FusionUtilities extends JavaPlugin
         if (this.dataManager.doTownyAssistance())
             getCommand("townyhelp").setExecutor(new TownyAssistance());
         else
-            unRegisterBukkitCommand(getCommand("townyhelp"));
+            unRegisterBukkitCommand(this, getCommand("townyhelp"));
         
         // Vote Command
-        if (this.dataManager.doVoteCommand())
+        if (this.dataManager.doVoteCommand()) {
+            if (Bukkit.getPluginManager().getPlugin("GAListener") != null) {
+                // todo: Check GAListener's config to see if their command should be disabled
+                // IF YOU'RE GOING TO HAVE A CONFIG OPTION TO REMOVE A PLUGIN, THEN UNREGISTER IT, YOU USELESS FUCKS
+                unRegisterBukkitCommand(Bukkit.getPluginManager().getPlugin("GAListener"), Bukkit.getPluginCommand("vote"));
+                registerBukkitCommand(getCommand("fusion-vote"));
+            }
             getCommand("fusion-vote").setExecutor(new Vote());
-        else
-            unRegisterBukkitCommand(getCommand("fusion-vote"));
+        } else
+            unRegisterBukkitCommand(this, getCommand("fusion-vote"));
         
         // Donate Command
         if (this.dataManager.doDonateCommand())
             getCommand("fusion-donate").setExecutor(new Donate());
         else
-            unRegisterBukkitCommand(getCommand("fusion-donate"));
+            unRegisterBukkitCommand(this, getCommand("fusion-donate"));
         
         // Poll Command
         if (this.dataManager.doPollCommand())
             getCommand("fusion-poll").setExecutor(new Poll());
         else
-            unRegisterBukkitCommand(getCommand("fusion-poll"));
+            unRegisterBukkitCommand(this, getCommand("fusion-poll"));
         
         // Find Source Command
         if (this.dataManager.doFindSourceCommand())
             getCommand("find-source").setExecutor(new FindSource());
         else
-            unRegisterBukkitCommand(getCommand("find-source"));
+            unRegisterBukkitCommand(this, getCommand("find-source"));
     }
     
     @Override
@@ -138,19 +145,34 @@ public final class FusionUtilities extends JavaPlugin
         return result;
     }
     
-    public static void unRegisterBukkitCommand(PluginCommand cmd) {
+    public static void unRegisterBukkitCommand(Plugin plugin, PluginCommand cmd) {
         try {
-            Object result = getPrivateField(getInstance().getServer().getPluginManager(), "commandMap");
+            Object result = getPrivateField(Bukkit.getServer().getPluginManager(), "commandMap");
             SimpleCommandMap commandMap = (SimpleCommandMap) result;
             Object map = getPrivateField(commandMap, "knownCommands");
             @SuppressWarnings("unchecked")
             HashMap<String, Command> knownCommands = (HashMap<String, Command>) map;
             knownCommands.remove(cmd.getName());
+            sendConsoleInfo("COMMAND NAME: " + cmd.getName());
             for (String alias : cmd.getAliases()){
-                if(knownCommands.containsKey(alias) && knownCommands.get(alias).toString().contains(getInstance().getName())){
+                sendConsoleInfo("COMMAND NAME: " + cmd.getName());
+                if(knownCommands.containsKey(alias) && knownCommands.get(alias).toString().contains(plugin.getName())){
                     knownCommands.remove(alias);
                 }
             }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    
+    public static void registerBukkitCommand(PluginCommand cmd) {
+        try {
+            Object result = getPrivateField(Bukkit.getServer().getPluginManager(), "commandMap");
+            SimpleCommandMap commandMap = (SimpleCommandMap) result;
+            Object map = getPrivateField(commandMap, "knownCommands");
+            @SuppressWarnings("unchecked")
+            HashMap<String, Command> knownCommands = (HashMap<String, Command>) map;
+            knownCommands.put("vote", cmd);
         } catch (Exception e) {
             e.printStackTrace();
         }
