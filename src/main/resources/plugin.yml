@@ -1,5 +1,5 @@
 name: FusionUtilities
-version: "1.02"
+version: "1.03"
 main: io.github.lordfusion.fusionutilities.FusionUtilities
 prefix: FusionUtilities
 authors: [Lord_Fusion]
