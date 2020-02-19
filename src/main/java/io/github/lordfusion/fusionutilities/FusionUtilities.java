@@ -8,9 +8,15 @@ import io.github.lordfusion.fusionutilities.utilities.MinetweakerReloader;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
+import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.PluginCommand;
+import org.bukkit.command.SimpleCommandMap;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import java.lang.reflect.Field;
+import java.util.HashMap;
 
 public final class FusionUtilities extends JavaPlugin
 {
@@ -35,18 +41,26 @@ public final class FusionUtilities extends JavaPlugin
         // Towny Assistance
         if (this.dataManager.doTownyAssistance())
             getCommand("townyhelp").setExecutor(new TownyAssistance());
+        else
+            unRegisterBukkitCommand(getCommand("townyhelp"));
         
         // Vote Command
         if (this.dataManager.doVoteCommand())
             getCommand("fusion-vote").setExecutor(new Vote());
+        else
+            unRegisterBukkitCommand(getCommand("fusion-vote"));
         
         // Donate Command
         if (this.dataManager.doDonateCommand())
             getCommand("fusion-donate").setExecutor(new Donate());
+        else
+            unRegisterBukkitCommand(getCommand("fusion-donate"));
         
         // Poll Command
         if (this.dataManager.doPollCommand())
             getCommand("fusion-poll").setExecutor(new Poll());
+        else
+            unRegisterBukkitCommand(getCommand("fusion-poll"));
     }
     
     @Override
@@ -108,5 +122,34 @@ public final class FusionUtilities extends JavaPlugin
         for (Player player : Bukkit.getOnlinePlayers())
             if (player.isOnline() && player.getWorld().equals(world))
                 player.spigot().sendMessage(msg);
+    }
+    
+    /* UNREGISTER COMMAND ************************************************************************ UNREGISTER COMMAND */
+    private static Object getPrivateField(Object object, String field)throws SecurityException,
+            NoSuchFieldException, IllegalArgumentException, IllegalAccessException {
+        Class<?> clazz = object.getClass();
+        Field objectField = clazz.getDeclaredField(field);
+        objectField.setAccessible(true);
+        Object result = objectField.get(object);
+        objectField.setAccessible(false);
+        return result;
+    }
+    
+    public static void unRegisterBukkitCommand(PluginCommand cmd) {
+        try {
+            Object result = getPrivateField(getInstance().getServer().getPluginManager(), "commandMap");
+            SimpleCommandMap commandMap = (SimpleCommandMap) result;
+            Object map = getPrivateField(commandMap, "knownCommands");
+            @SuppressWarnings("unchecked")
+            HashMap<String, Command> knownCommands = (HashMap<String, Command>) map;
+            knownCommands.remove(cmd.getName());
+            for (String alias : cmd.getAliases()){
+                if(knownCommands.containsKey(alias) && knownCommands.get(alias).toString().contains(getInstance().getName())){
+                    knownCommands.remove(alias);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
