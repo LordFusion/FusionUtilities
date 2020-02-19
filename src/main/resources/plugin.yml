@@ -24,6 +24,10 @@ commands:
     description: "Start a server-wide vote to change time, weather, or ask a question."
     aliases: [poll]
     usage: /<command>
+  find-source:
+    description: "Find the source of a specified command."
+    usage: "/find-source <command>"
+    permission: fusion.utilities.findsource
 
 #  ft:
 #    description: "For testing only."

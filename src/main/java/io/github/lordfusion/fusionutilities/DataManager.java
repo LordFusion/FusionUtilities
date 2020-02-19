@@ -23,6 +23,7 @@ public class DataManager
     private static final String DONATE_CMD = "Donate Command";
     private static final String POLL_CMD = "Poll Command";
     private static final String POLL_COST = "Poll Cost";
+    private static final String FNDSRC_CMD = "Find Source Command";
     
     // Integrations
     private boolean economyEnabled;
@@ -78,6 +79,10 @@ public class DataManager
             config.set(POLL_CMD, false);
             fileChanged = true;
         }
+        if (!configKeys.contains(FNDSRC_CMD)) {
+            config.set(FNDSRC_CMD, false);
+            fileChanged = true;
+        }
         if (!configKeys.contains(POLL_COST)) {
             config.set(POLL_COST, 0.0);
             fileChanged = true;
@@ -104,7 +109,8 @@ public class DataManager
         this.config.set(VOTE_CMD, false);
         this.config.set(DONATE_CMD, false);
         this.config.set(POLL_CMD, false);
-        this.config.get(POLL_COST, 0.0);
+        this.config.set(FNDSRC_CMD, false);
+        this.config.set(POLL_COST, 0.0);
         FusionUtilities.sendConsoleInfo("Default config restored.");
         // Save
         this.saveConfigFile();
@@ -172,6 +178,16 @@ public class DataManager
     public void setPollCommand(boolean b)
     {
         this.config.set(POLL_CMD, b);
+    }
+    public boolean doFindSourceCommand()
+    {
+        if (this.config != null && this.config.contains(FNDSRC_CMD))
+            return this.config.getBoolean(FNDSRC_CMD, false);
+        return false;
+    }
+    public void setFindSourceCommand(boolean b)
+    {
+        this.config.set(FNDSRC_CMD, b);
     }
     
     public void setPollCost(double d)
