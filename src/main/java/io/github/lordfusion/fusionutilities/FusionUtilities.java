@@ -1,9 +1,6 @@
 package io.github.lordfusion.fusionutilities;
 
-import io.github.lordfusion.fusionutilities.commands.Donate;
-import io.github.lordfusion.fusionutilities.commands.Poll;
-import io.github.lordfusion.fusionutilities.commands.TownyAssistance;
-import io.github.lordfusion.fusionutilities.commands.Vote;
+import io.github.lordfusion.fusionutilities.commands.*;
 import io.github.lordfusion.fusionutilities.utilities.MinetweakerReloader;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
@@ -61,6 +58,12 @@ public final class FusionUtilities extends JavaPlugin
             getCommand("fusion-poll").setExecutor(new Poll());
         else
             unRegisterBukkitCommand(getCommand("fusion-poll"));
+        
+        // Find Source Command
+        if (this.dataManager.doFindSourceCommand())
+            getCommand("find-source").setExecutor(new FindSource());
+        else
+            unRegisterBukkitCommand(getCommand("find-source"));
     }
     
     @Override
