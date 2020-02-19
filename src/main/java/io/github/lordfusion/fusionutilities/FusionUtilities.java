@@ -1,11 +1,13 @@
 package io.github.lordfusion.fusionutilities;
 
 import io.github.lordfusion.fusionutilities.commands.Donate;
+import io.github.lordfusion.fusionutilities.commands.Poll;
 import io.github.lordfusion.fusionutilities.commands.TownyAssistance;
 import io.github.lordfusion.fusionutilities.commands.Vote;
 import io.github.lordfusion.fusionutilities.utilities.MinetweakerReloader;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
+import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -15,12 +17,16 @@ public final class FusionUtilities extends JavaPlugin
     static final String CONSOLE_PREFIX = "[Fusion Utilities] ";
     
     private DataManager dataManager;
+    private static FusionUtilities INSTANCE;
+    
+    public static String PERMISSION_FREEPOLL = "fusion.utilities.poll.free";
     
     @Override
     public void onEnable()
     {
         sendConsoleInfo("Time to do nothing useful!");
         this.dataManager = new DataManager(this.getDataFolder().getAbsolutePath());
+        INSTANCE = this;
         
         // Minetweaker Reloader
         if (this.dataManager.doMinetweakerReload())
@@ -37,12 +43,25 @@ public final class FusionUtilities extends JavaPlugin
         // Donate Command
         if (this.dataManager.doDonateCommand())
             getCommand("fusion-donate").setExecutor(new Donate());
+        
+        // Poll Command
+        if (this.dataManager.doPollCommand())
+            getCommand("fusion-poll").setExecutor(new Poll());
     }
     
     @Override
     public void onDisable()
     {
     
+    }
+    
+    public static FusionUtilities getInstance()
+    {
+        return INSTANCE;
+    }
+    public DataManager getDataManager()
+    {
+        return this.dataManager;
     }
     
     /**
@@ -75,5 +94,19 @@ public final class FusionUtilities extends JavaPlugin
     {
         for (TextComponent msg : msgs)
             sendUserMessage(sender, msg);
+    }
+    
+    public static void broadcast(TextComponent msg)
+    {
+        for (Player player : Bukkit.getOnlinePlayers())
+            if (player.isOnline())
+                player.spigot().sendMessage(msg);
+    }
+    
+    public static void worldBroadcast(World world, TextComponent msg)
+    {
+        for (Player player : Bukkit.getOnlinePlayers())
+            if (player.isOnline() && player.getWorld().equals(world))
+                player.spigot().sendMessage(msg);
     }
 }

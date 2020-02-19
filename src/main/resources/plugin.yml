@@ -1,8 +1,10 @@
 name: FusionUtilities
-version: "1.02"
+version: "1.03"
 main: io.github.lordfusion.fusionutilities.FusionUtilities
 prefix: FusionUtilities
 authors: [Lord_Fusion]
+softdepend:
+  - Vault
 description: Miscellaneous garbage.
 website: lordfusion.github.io
 
@@ -17,6 +19,10 @@ commands:
   fusion-donate:
     description: "Provides a link to the server's donation site."
     aliases: [donate]
+    usage: /<command>
+  fusion-poll:
+    description: "Start a server-wide vote to change time, weather, or ask a question."
+    aliases: [poll]
     usage: /<command>
 
 #  ft:

@@ -1,9 +1,14 @@
 package io.github.lordfusion.fusionutilities;
 
+import net.milkbowl.vault.economy.Economy;
+import org.bukkit.Bukkit;
+import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Set;
 
 public class DataManager
 {
@@ -16,6 +21,12 @@ public class DataManager
     private static final String TOWNY_CMD = "Towny Assistance Command";
     private static final String VOTE_CMD = "Vote Command";
     private static final String DONATE_CMD = "Donate Command";
+    private static final String POLL_CMD = "Poll Command";
+    private static final String POLL_COST = "Poll Cost";
+    
+    // Integrations
+    private boolean economyEnabled;
+    private Economy economy;
     
     /**
      * The DataManager... Manages data. All of it. Any file-related data this plugin needs, here it is. Right here.
@@ -23,8 +34,12 @@ public class DataManager
      */
     DataManager(String pluginDataFolder)
     {
+        // Configurations
         dataFolderPath = pluginDataFolder;
         this.loadConfigFile();
+        
+        // Integrations
+        this.economyEnabled = checkEconomyIntegration();
     }
     
     /**
@@ -41,21 +56,30 @@ public class DataManager
         }
     
         // Make sure the file is complete
+        Set<String> configKeys = config.getKeys(false);
         boolean fileChanged = false;
-        if (!config.getKeys(false).contains(MT_RELOAD)) {
+        if (!configKeys.contains(MT_RELOAD)) {
             config.set(MT_RELOAD, false);
             fileChanged = true;
         }
-        if (!config.getKeys(false).contains(TOWNY_CMD)) {
+        if (!configKeys.contains(TOWNY_CMD)) {
             config.set(TOWNY_CMD, false);
             fileChanged = true;
         }
-        if (!config.getKeys(false).contains(VOTE_CMD)) {
+        if (!configKeys.contains(VOTE_CMD)) {
             config.set(VOTE_CMD, false);
             fileChanged = true;
         }
-        if (!config.getKeys(false).contains(DONATE_CMD)) {
+        if (!configKeys.contains(DONATE_CMD)) {
             config.set(DONATE_CMD, false);
+            fileChanged = true;
+        }
+        if (!configKeys.contains(POLL_CMD)) {
+            config.set(POLL_CMD, false);
+            fileChanged = true;
+        }
+        if (!configKeys.contains(POLL_COST)) {
+            config.set(POLL_COST, 0.0);
             fileChanged = true;
         }
         
@@ -79,6 +103,8 @@ public class DataManager
         this.config.set(TOWNY_CMD, false);
         this.config.set(VOTE_CMD, false);
         this.config.set(DONATE_CMD, false);
+        this.config.set(POLL_CMD, false);
+        this.config.get(POLL_COST, 0.0);
         FusionUtilities.sendConsoleInfo("Default config restored.");
         // Save
         this.saveConfigFile();
@@ -137,4 +163,65 @@ public class DataManager
     {
         this.config.set(DONATE_CMD, b);
     }
+    public boolean doPollCommand()
+    {
+        if (this.config != null && this.config.contains(POLL_CMD))
+            return this.config.getBoolean(POLL_CMD, false);
+        return false;
+    }
+    public void setPollCommand(boolean b)
+    {
+        this.config.set(POLL_CMD, b);
+    }
+    
+    public void setPollCost(double d)
+    {
+        this.config.set(POLL_COST, d);
+    }
+    public double getPollCost()
+    {
+        if (this.config != null && this.config.contains(POLL_COST))
+            return this.config.getDouble(POLL_COST, 0.0);
+        return 0.0;
+    }
+    
+    // Integrations ************************************************************************************ Integrations //
+    
+    /**
+     * Checks if any economy plugins are present on the server.
+     * Currently checks for: Vault
+     * @return True if an economy plugin is found, false otherwise.
+     */
+    private boolean checkEconomyIntegration()
+    {
+        FusionUtilities.sendConsoleInfo("Checking for economy integration...");
+        if (Bukkit.getPluginManager().isPluginEnabled("Vault")) {
+            FusionUtilities.sendConsoleInfo("Vault integration found!");
+            this.economy = Bukkit.getServer().getServicesManager().getRegistration(Economy.class).getProvider();
+            return true;
+        } else {
+            FusionUtilities.sendConsoleWarn("No economy integrations found.");
+            this.economy = null;
+            return false;
+        }
+    }
+    public boolean isEconomyEnabled()
+    {
+        return this.economyEnabled;
+    }
+    public Economy getEconomy()
+    {
+        if (this.isEconomyEnabled())
+            return this.economy;
+        return null;
+    }
+    public boolean doPollCost()
+    {
+        return this.isEconomyEnabled() && this.getPollCost() > 0;
+    }
+    public boolean chargeForPoll(CommandSender sender)
+    {
+        return sender instanceof Player && doPollCost() && !sender.hasPermission(FusionUtilities.PERMISSION_FREEPOLL);
+    }
+    
 }
