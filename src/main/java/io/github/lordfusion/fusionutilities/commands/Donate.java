@@ -7,7 +7,6 @@ import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
 public class Donate implements CommandExecutor
 {
@@ -30,10 +29,7 @@ public class Donate implements CommandExecutor
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args)
     {
-        if (sender instanceof Player)
-            FusionUtilities.sendUserMessages(sender, msgs);
-        else
-            sender.sendMessage("Command not supported.");
+        FusionUtilities.sendUserMessages(sender, msgs);
         return true;
     }
     
@@ -50,7 +46,7 @@ public class Donate implements CommandExecutor
         
         this.msgs[1] = new TextComponent("Donation link: ");
         this.msgs[1].setColor(ChatColor.DARK_AQUA);
-        TextComponent link1 = new TextComponent("goreacraft.tebex.io/");
+        TextComponent link1 = new TextComponent("goreacraft.tebex.io");
         link1.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "http://goreacraft.tebex.io/"));
         link1.setColor(ChatColor.AQUA);
         this.msgs[1].addExtra(link1);
