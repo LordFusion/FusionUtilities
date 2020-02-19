@@ -71,6 +71,12 @@ public final class FusionUtilities extends JavaPlugin
             getCommand("find-source").setExecutor(new FindSource());
         else
             unRegisterBukkitCommand(this, getCommand("find-source"));
+        
+        // Kickout Command
+        if (this.dataManager.doKickoutCommand() && this.dataManager.isTownyEnabled())
+            getCommand("kickout").setExecutor(new Kickout());
+        else
+            unRegisterBukkitCommand(this, getCommand("kickout"));
     }
     
     @Override
