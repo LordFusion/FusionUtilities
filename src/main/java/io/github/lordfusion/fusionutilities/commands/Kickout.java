@@ -1,11 +1,15 @@
 package io.github.lordfusion.fusionutilities.commands;
 
+import com.earth2me.essentials.User;
 import com.palmergames.bukkit.towny.exceptions.NotRegisteredException;
 import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
+import com.palmergames.bukkit.towny.object.TownBlock;
 import io.github.lordfusion.fusionutilities.DataManager;
 import io.github.lordfusion.fusionutilities.FusionUtilities;
 import net.md_5.bungee.api.chat.TextComponent;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -16,7 +20,8 @@ public class Kickout implements CommandExecutor
     private DataManager dataManager;
     
     private static TextComponent HELP;
-    private static TextComponent MSG_CONSOLE_UNAVAILABLE, MSG_TOWNY_DISABLED, MSG_NOT_RESIDENT, MSG_NO_TOWN;
+    private static TextComponent MSG_CONSOLE_UNAVAILABLE, MSG_TOWNY_DISABLED, MSG_NOT_RESIDENT, MSG_NO_TOWN,
+            MSG_NOT_FOUND, MSG_KICK_SUCCESS, MSG_KICK_FAIL, MSG_YOU_WERE_KICKED;
     
     public Kickout()
     {
@@ -55,7 +60,15 @@ public class Kickout implements CommandExecutor
             FusionUtilities.sendConsoleInfo(sender.getName() + " could not use /kickout; Incorrect arguments.");
             return true;
         }
+        // Ensure that the argument is an actual player
+        Player target = findPlayer(args[0]);
+        if (target == null) {
+            FusionUtilities.sendUserMessage(sender, MSG_NOT_FOUND);
+            FusionUtilities.sendConsoleInfo(sender.getName() + " could not use /kickout; Invalid player.");
+            return true;
+        }
     
+        // Get command-sender resident data
         Resident resident = this.dataManager.getTowny().getTownyUniverse().getResidentMap().get(sender.getName());
         if (resident == null) {
             FusionUtilities.sendUserMessage(sender, MSG_NOT_RESIDENT);
@@ -71,8 +84,45 @@ public class Kickout implements CommandExecutor
             return true;
         }
         
+        // Get target position data
+        int chunkX = target.getLocation().getChunk().getX();
+        int chunkZ = target.getLocation().getChunk().getZ();
         
+        for (TownBlock townBlock : town.getTownBlocks()) {
+            if (townBlock.getX() == chunkX && townBlock.getZ() == chunkZ) {
+                if (kickOut(target)) {
+                    FusionUtilities.sendUserMessage(sender, MSG_KICK_SUCCESS);
+                    FusionUtilities.sendUserMessage(target, MSG_YOU_WERE_KICKED);
+                    FusionUtilities.sendConsoleInfo(sender.getName() + " ejected " + target.getName() + " from town " +
+                            town.getName());
+                } else {
+                    FusionUtilities.sendUserMessage(sender, MSG_KICK_FAIL);
+                    FusionUtilities.sendConsoleWarn("Tried and failed to kick " + target.getName() + " from " + sender +
+                            "'s town: " + town.getName());
+                }
+                return true;
+            }
+        }
         
         return true;
+    }
+    
+    private static Player findPlayer(String name)
+    {
+        for (Player player : Bukkit.getOnlinePlayers())
+            if (player.getName().equalsIgnoreCase(name) || player.getDisplayName().equalsIgnoreCase(name))
+                return player;
+        return null;
+    }
+    
+    private boolean kickOut(Player player)
+    {
+        Location spawnLocation = player.getWorld().getSpawnLocation();
+        
+        // Override /back so that the person that got kicked out can't easily come back
+        User essentialsUser = this.dataManager.getEssentials().getUser(player);
+        essentialsUser.setLastLocation(spawnLocation);
+        
+        return player.teleport(spawnLocation);
     }
 }

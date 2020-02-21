@@ -1,5 +1,6 @@
 package io.github.lordfusion.fusionutilities;
 
+import com.earth2me.essentials.Essentials;
 import com.palmergames.bukkit.towny.Towny;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
@@ -33,6 +34,8 @@ public class DataManager
     private Economy economy;
     private boolean townyEnabled;
     private Plugin towny;
+    private boolean essentialsEnabled;
+    private Plugin essentials;
     
     /**
      * The DataManager... Manages data. All of it. Any file-related data this plugin needs, here it is. Right here.
@@ -285,5 +288,23 @@ public class DataManager
     public Towny getTowny()
     {
         return (Towny)this.towny;
+    }
+    
+    private boolean checkEssentialsIntegration()
+    {
+        FusionUtilities.sendConsoleInfo("Checking for Essentials integration...");
+        if (Bukkit.getPluginManager().isPluginEnabled("Essentials")) {
+            FusionUtilities.sendConsoleInfo("Essentials integration found!");
+            this.essentials = Bukkit.getPluginManager().getPlugin("Essentials");
+            return true;
+        } else {
+            FusionUtilities.sendConsoleWarn("No Essentials integrations found.");
+            this.essentials = null;
+            return false;
+        }
+    }
+    public Essentials getEssentials()
+    {
+        return (Essentials)this.essentials;
     }
 }
