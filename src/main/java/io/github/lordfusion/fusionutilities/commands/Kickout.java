@@ -27,6 +27,17 @@ public class Kickout implements CommandExecutor
     public Kickout()
     {
         this.dataManager = FusionUtilities.getInstance().getDataManager();
+    
+        this.setupMsgConsoleUnavailable();
+        this.setupMsgTownyDisabled();
+        this.setupMsgNotResident();
+        this.setupMsgNoTown();
+        this.setupMsgPlayerNotFound();
+        this.setupMsgKickSuccess();
+        this.setupMsgKickFailure();
+        this.setupMsgYouWereKicked();
+        this.setupMsgNotInTown();
+        this.setupHelp();
     }
     
     /**
