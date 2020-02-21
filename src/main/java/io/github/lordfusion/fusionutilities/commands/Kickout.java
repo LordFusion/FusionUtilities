@@ -7,6 +7,7 @@ import com.palmergames.bukkit.towny.object.Town;
 import com.palmergames.bukkit.towny.object.TownBlock;
 import io.github.lordfusion.fusionutilities.DataManager;
 import io.github.lordfusion.fusionutilities.FusionUtilities;
+import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -21,7 +22,7 @@ public class Kickout implements CommandExecutor
     
     private static TextComponent HELP;
     private static TextComponent MSG_CONSOLE_UNAVAILABLE, MSG_TOWNY_DISABLED, MSG_NOT_RESIDENT, MSG_NO_TOWN,
-            MSG_NOT_FOUND, MSG_KICK_SUCCESS, MSG_KICK_FAIL, MSG_YOU_WERE_KICKED;
+            MSG_PLAYER_NOT_FOUND, MSG_KICK_SUCCESS, MSG_KICK_FAIL, MSG_YOU_WERE_KICKED, MSG_NOT_IN_TOWN;
     
     public Kickout()
     {
@@ -63,7 +64,9 @@ public class Kickout implements CommandExecutor
         // Ensure that the argument is an actual player
         Player target = findPlayer(args[0]);
         if (target == null) {
-            FusionUtilities.sendUserMessage(sender, MSG_NOT_FOUND);
+            TextComponent msg = (TextComponent)MSG_PLAYER_NOT_FOUND.duplicate();
+            msg.addExtra(args[0]);
+            FusionUtilities.sendUserMessage(sender, msg);
             FusionUtilities.sendConsoleInfo(sender.getName() + " could not use /kickout; Invalid player.");
             return true;
         }
@@ -104,6 +107,9 @@ public class Kickout implements CommandExecutor
             }
         }
         
+        FusionUtilities.sendUserMessage(sender, MSG_NOT_IN_TOWN);
+        FusionUtilities.sendConsoleInfo(sender.getName() + " tried to kick " + target.getName() + " from " +
+                town.getName() + ", but target is not within town.");
         return true;
     }
     
@@ -124,5 +130,58 @@ public class Kickout implements CommandExecutor
         essentialsUser.setLastLocation(spawnLocation);
         
         return player.teleport(spawnLocation);
+    }
+    
+    /* MESSAGES ******************************************************************************************** MESSAGES */
+    private void setupMsgConsoleUnavailable()
+    {
+        MSG_CONSOLE_UNAVAILABLE = new TextComponent("This command is only available for players.");
+        MSG_CONSOLE_UNAVAILABLE.setColor(ChatColor.RED);
+    }
+    private void setupMsgTownyDisabled()
+    {
+        MSG_TOWNY_DISABLED = new TextComponent("Towny is not available on this server.");
+        MSG_TOWNY_DISABLED.setColor(ChatColor.DARK_RED);
+    }
+    private void setupMsgNotResident()
+    {
+        MSG_NOT_RESIDENT = new TextComponent("This command is only available for residents.");
+        MSG_NOT_RESIDENT.setColor(ChatColor.RED);
+    }
+    private void setupMsgNoTown()
+    {
+        MSG_NO_TOWN = new TextComponent("You are not part of a town.");
+        MSG_NO_TOWN.setColor(ChatColor.RED);
+    }
+    private void setupMsgPlayerNotFound()
+    {
+        MSG_PLAYER_NOT_FOUND = new TextComponent("Player not found: ");
+        MSG_PLAYER_NOT_FOUND.setColor(ChatColor.YELLOW);
+    }
+    private void setupMsgKickSuccess()
+    {
+        MSG_KICK_SUCCESS = new TextComponent("Successfully kicked from your town: ");
+        MSG_KICK_SUCCESS.setColor(ChatColor.GREEN);
+    }
+    private void setupMsgKickFailure()
+    {
+        MSG_KICK_FAIL = new TextComponent("Failed to kick player from your town. Contact an admin.");
+        MSG_KICK_FAIL.setColor(ChatColor.DARK_RED);
+    }
+    private void setupMsgYouWereKicked()
+    {
+        MSG_YOU_WERE_KICKED = new TextComponent("You were driven out of a town.");
+        MSG_YOU_WERE_KICKED.setColor(ChatColor.LIGHT_PURPLE);
+    }
+    private void setupMsgNotInTown()
+    {
+        MSG_NOT_IN_TOWN = new TextComponent("That player isn't inside your town.");
+        MSG_NOT_IN_TOWN.setColor(ChatColor.YELLOW);
+    }
+    
+    private void setupHelp()
+    {
+        HELP = new TextComponent("/ko <username> - Teleports the user out of your town.");
+        HELP.setColor(ChatColor.BLUE);
     }
 }
