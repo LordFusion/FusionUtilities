@@ -168,9 +168,7 @@ public final class FusionUtilities extends JavaPlugin
             @SuppressWarnings("unchecked")
             HashMap<String, Command> knownCommands = (HashMap<String, Command>) map;
             knownCommands.remove(cmd.getName());
-            sendConsoleInfo("COMMAND NAME: " + cmd.getName());
             for (String alias : cmd.getAliases()){
-                sendConsoleInfo("COMMAND NAME: " + cmd.getName());
                 if(knownCommands.containsKey(alias) && knownCommands.get(alias).toString().contains(plugin.getName())){
                     knownCommands.remove(alias);
                 }
