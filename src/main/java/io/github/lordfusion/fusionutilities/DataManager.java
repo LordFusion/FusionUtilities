@@ -24,6 +24,8 @@ public class DataManager
     private static final String POLL_CMD = "Poll Command";
     private static final String POLL_COST = "Poll Cost";
     private static final String FNDSRC_CMD = "Find Source Command";
+    private static final String MAX_INV_CHECK = "Inventory Overflow Protection";
+    private static final String MAX_INV_SIZE = "Max Inventory Size";
     
     // Integrations
     private boolean economyEnabled;
@@ -87,6 +89,14 @@ public class DataManager
             config.set(POLL_COST, 0.0);
             fileChanged = true;
         }
+        if (!configKeys.contains(MAX_INV_CHECK)) {
+            config.set(MAX_INV_CHECK, false);
+            fileChanged = true;
+        }
+        if (!configKeys.contains(MAX_INV_SIZE)) {
+            config.set(MAX_INV_SIZE, 2147483647);
+            fileChanged = true;
+        }
         
         // Save the config if we added a missing default value
         if (fileChanged)
@@ -111,6 +121,8 @@ public class DataManager
         this.config.set(POLL_CMD, false);
         this.config.set(FNDSRC_CMD, false);
         this.config.set(POLL_COST, 0.0);
+        this.config.set(MAX_INV_CHECK, false);
+        this.config.set(MAX_INV_SIZE, 2147483647);
         FusionUtilities.sendConsoleInfo("Default config restored.");
         // Save
         this.saveConfigFile();
@@ -189,6 +201,26 @@ public class DataManager
     {
         this.config.set(FNDSRC_CMD, b);
     }
+    public boolean doInventoryOverflowCheck()
+    {
+        if (this.config != null && this.config.contains(MAX_INV_CHECK))
+            return this.config.getBoolean(MAX_INV_CHECK, false);
+        return false;
+    }
+    public void setInventoryOverflowCheck(boolean b)
+    {
+        this.config.set(MAX_INV_CHECK, b);
+    }
+    public int getMaxInventorySize()
+    {
+        if (this.config != null && this.config.contains(MAX_INV_SIZE))
+            return this.config.getInt(MAX_INV_SIZE, 2147483647);
+        return 2147483647;
+    }
+    public void setMaxInventorySize(int i)
+    {
+        this.config.set(MAX_INV_SIZE, i);
+    }
     
     public void setPollCost(double d)
     {
@@ -200,6 +232,7 @@ public class DataManager
             return this.config.getDouble(POLL_COST, 0.0);
         return 0.0;
     }
+    
     
     // Integrations ************************************************************************************ Integrations //
     
