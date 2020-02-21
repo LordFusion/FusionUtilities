@@ -50,6 +50,7 @@ public class DataManager
         // Integrations
         this.economyEnabled = checkEconomyIntegration();
         this.townyEnabled = checkTownyIntegration();
+        this.essentialsEnabled = checkEssentialsIntegration();
     }
     
     /**
