@@ -83,7 +83,8 @@ public class Kickout implements CommandExecutor
         }
     
         // Get command-sender resident data
-        Resident resident = this.dataManager.getTowny().getTownyUniverse().getResidentMap().get(sender.getName());
+        Resident resident = this.dataManager.getTowny().getTownyUniverse().getResidentMap()
+                .get(sender.getName().toLowerCase());
         if (resident == null) {
             FusionUtilities.sendUserMessage(sender, MSG_NOT_RESIDENT);
             FusionUtilities.sendConsoleInfo(sender.getName() + " could not use /kickout; They are not a Resident.");
@@ -138,9 +139,11 @@ public class Kickout implements CommandExecutor
         
         // Override /back so that the person that got kicked out can't easily come back
         User essentialsUser = this.dataManager.getEssentials().getUser(player);
+        
+        boolean output = player.teleport(spawnLocation);
         essentialsUser.setLastLocation(spawnLocation);
         
-        return player.teleport(spawnLocation);
+        return output;
     }
     
     /* MESSAGES ******************************************************************************************** MESSAGES */
