@@ -1,10 +1,11 @@
 name: FusionUtilities
-version: "1.04"
+version: "1.05"
 main: io.github.lordfusion.fusionutilities.FusionUtilities
 prefix: FusionUtilities
 authors: [Lord_Fusion]
 softdepend:
   - Vault
+  - Towny
 description: Miscellaneous garbage.
 website: lordfusion.github.io
 
@@ -28,6 +29,11 @@ commands:
     description: "Find the source of a specified command."
     usage: "/find-source <command>"
     permission: fusion.utilities.findsource
+  kickout:
+    description: "Kick an intruding player from your town borders."
+    aliases: [ko]
+    usage: /<command> [username]
+    permission: fusion.utilities.kickout
 
 #  ft:
 #    description: "For testing only."
