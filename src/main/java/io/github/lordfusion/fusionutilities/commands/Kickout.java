@@ -127,9 +127,11 @@ public class Kickout implements CommandExecutor
     
     private static Player findPlayer(String name)
     {
-        for (Player player : Bukkit.getOnlinePlayers())
-            if (player.getName().equalsIgnoreCase(name) || player.getDisplayName().equalsIgnoreCase(name))
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            if (player.getName().equalsIgnoreCase(name) || player.getDisplayName().equalsIgnoreCase(name) ||
+                    player.getName().contains(name) || player.getDisplayName().contains(name))
                 return player;
+        }
         return null;
     }
     
