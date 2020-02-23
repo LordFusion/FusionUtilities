@@ -67,6 +67,7 @@ public class InventoryOverflowDetector implements Listener
             return;
         
         FusionUtilities.sendConsoleWarn("INVENTORY OVERFLOW | " + event.getPlayer().getName() + "'s file size: ");
+        this.damagedPlayers.add(event.getPlayer().getUniqueId());
         
         // Move the player's data into a folder to be kept as a backup
         try {
