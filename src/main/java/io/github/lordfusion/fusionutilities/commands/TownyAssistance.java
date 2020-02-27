@@ -8,7 +8,6 @@ import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
 public class TownyAssistance implements CommandExecutor
 {
@@ -144,22 +143,22 @@ public class TownyAssistance implements CommandExecutor
     private void setupNationsMessage()
     {
         this.nationsMessage = new TextComponent[8];
-        this.basicsMessage[0] = new TextComponent("Helpful information for Towny's Nations:");
-        this.basicsMessage[0].setColor(ChatColor.LIGHT_PURPLE);
-        this.basicsMessage[1] = new TextComponent(" Nations are a grouping of towns under one umbrella. Benefits include:");
-        this.basicsMessage[1].setColor(ChatColor.BLUE);
-        this.basicsMessage[2] = new TextComponent(" - Bonus chunks (10 to every town, per 10 Nation residents)");
-        this.basicsMessage[2].setColor(ChatColor.AQUA);
-        this.basicsMessage[3] = new TextComponent(" - Ally permissions (allow Nation members access to your plots)");
-        this.basicsMessage[3].setColor(ChatColor.BLUE);
-        this.basicsMessage[4] = new TextComponent(" - Nation chat and taxes (similar to their town variants)");
-        this.basicsMessage[4].setColor(ChatColor.AQUA);
-        this.basicsMessage[5] = new TextComponent(" 1) Create a nation: \"/n create <name>\"");
-        this.basicsMessage[5].setColor(ChatColor.BLUE);
-        this.basicsMessage[6] = new TextComponent(" 2) Invite other towns: \"/n add <town name>\"");
-        this.basicsMessage[6].setColor(ChatColor.AQUA);
-        this.basicsMessage[7] = new TextComponent(" 3) See your nation's bank and other info: \"/nation\"");
-        this.basicsMessage[7].setColor(ChatColor.BLUE);
+        this.nationsMessage[0] = new TextComponent("Helpful information for Towny's Nations:");
+        this.nationsMessage[0].setColor(ChatColor.LIGHT_PURPLE);
+        this.nationsMessage[1] = new TextComponent(" Nations are a grouping of towns. Benefits include:");
+        this.nationsMessage[1].setColor(ChatColor.BLUE);
+        this.nationsMessage[2] = new TextComponent(" - Bonus chunks (10 to every town, per 10 Nation residents)");
+        this.nationsMessage[2].setColor(ChatColor.AQUA);
+        this.nationsMessage[3] = new TextComponent(" - Ally permissions (give the nation access to your plots)");
+        this.nationsMessage[3].setColor(ChatColor.BLUE);
+        this.nationsMessage[4] = new TextComponent(" - Nation chat and taxes (similar to their town variants)");
+        this.nationsMessage[4].setColor(ChatColor.AQUA);
+        this.nationsMessage[5] = new TextComponent(" 1) Create a nation: \"/n create <name>\"");
+        this.nationsMessage[5].setColor(ChatColor.BLUE);
+        this.nationsMessage[6] = new TextComponent(" 2) Invite other towns: \"/n add <town name>\"");
+        this.nationsMessage[6].setColor(ChatColor.AQUA);
+        this.nationsMessage[7] = new TextComponent(" 3) See your nation's bank and other info: \"/nation\"");
+        this.nationsMessage[7].setColor(ChatColor.BLUE);
     }
     
     /**
