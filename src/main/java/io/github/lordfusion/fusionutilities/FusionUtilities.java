@@ -2,6 +2,7 @@ package io.github.lordfusion.fusionutilities;
 
 import io.github.lordfusion.fusionutilities.commands.*;
 import io.github.lordfusion.fusionutilities.utilities.MinetweakerReloader;
+import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -71,6 +72,12 @@ public final class FusionUtilities extends JavaPlugin
             getCommand("find-source").setExecutor(new FindSource());
         else
             unRegisterBukkitCommand(this, getCommand("find-source"));
+        
+        // Kickout Command
+        if (this.dataManager.doKickoutCommand() && this.dataManager.isTownyEnabled())
+            getCommand("kickout").setExecutor(new Kickout());
+        else
+            unRegisterBukkitCommand(this, getCommand("kickout"));
     }
     
     @Override
@@ -110,8 +117,16 @@ public final class FusionUtilities extends JavaPlugin
     {
         if (sender instanceof Player)
             ((Player)sender).spigot().sendMessage(msg);
-        else
-            sender.sendMessage(msg.getText());
+        else {
+            if (msg.getExtra() != null) {
+                StringBuilder line = new StringBuilder(msg.getText());
+                for (BaseComponent extra : msg.getExtra())
+                    line.append(((TextComponent)extra).getText());
+                sender.sendMessage(line.toString());
+            } else {
+                sender.sendMessage(msg.getText());
+            }
+        }
     }
     
     public static void sendUserMessages(CommandSender sender, TextComponent[] msgs)
@@ -153,9 +168,7 @@ public final class FusionUtilities extends JavaPlugin
             @SuppressWarnings("unchecked")
             HashMap<String, Command> knownCommands = (HashMap<String, Command>) map;
             knownCommands.remove(cmd.getName());
-            sendConsoleInfo("COMMAND NAME: " + cmd.getName());
             for (String alias : cmd.getAliases()){
-                sendConsoleInfo("COMMAND NAME: " + cmd.getName());
                 if(knownCommands.containsKey(alias) && knownCommands.get(alias).toString().contains(plugin.getName())){
                     knownCommands.remove(alias);
                 }

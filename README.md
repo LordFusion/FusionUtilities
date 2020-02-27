@@ -1,16 +1,20 @@
 ![Fusion Logo](https://i.imgur.com/pa9g9Kc.png)
 # FusionUtilities
-A personalized utility plugin used on my own servers.\
 Designed for 1.7.10.\
 Working on 1.7.10. Will probably work on other versions.
 
-# Latest Release: 1.04
-- MineTweaker Reload (on player join)
+All modules and commands can be disabled from the config, and default to disabled.
+
+# Latest Release: 1.05
+### Features
+- MineTweaker Reload
 - TownyHelp Command
 - Vote & Donate commands
 - Poll Command
 - Find-Source Command
+- Kick from Town Command
+### Bug Fixes
+- N/A
 
 # Future Plans
-- Kick from Town Command
 - Inventory Overflow Repair
