@@ -5,7 +5,7 @@ Working on 1.7.10. Will probably work on other versions.
 
 All modules and commands can be disabled from the config, and default to disabled.
 
-# Latest Release: 1.05
+# Latest Release: 1.05.01
 ### Features
 - MineTweaker Reload
 - TownyHelp Command
