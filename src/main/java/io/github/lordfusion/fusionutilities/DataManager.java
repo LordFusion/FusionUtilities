@@ -11,6 +11,7 @@ import org.bukkit.plugin.Plugin;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Set;
 
 public class DataManager
@@ -28,6 +29,18 @@ public class DataManager
     private static final String POLL_COST = "Poll Cost";
     private static final String FNDSRC_CMD = "Find Source Command";
     private static final String KICKOUT_CMD = "Kickout Command";
+    
+    // Config defaults
+    private static final HashMap<String, Object> CONFIG_DEFAULTS = new HashMap<String, Object>() {{
+        put(MT_RELOAD, false);
+        put(TOWNY_CMD, false);
+        put(VOTE_CMD, false);
+        put(DONATE_CMD, false);
+        put(POLL_CMD, false);
+        put(POLL_COST, 0.0);
+        put(FNDSRC_CMD, false);
+        put(KICKOUT_CMD, false);
+    }};
     
     // Integrations
     private boolean economyEnabled;
@@ -71,35 +84,35 @@ public class DataManager
         Set<String> configKeys = config.getKeys(false);
         boolean fileChanged = false;
         if (!configKeys.contains(MT_RELOAD)) {
-            config.set(MT_RELOAD, false);
+            config.set(MT_RELOAD, CONFIG_DEFAULTS.get(MT_RELOAD));
             fileChanged = true;
         }
         if (!configKeys.contains(TOWNY_CMD)) {
-            config.set(TOWNY_CMD, false);
+            config.set(TOWNY_CMD, CONFIG_DEFAULTS.get(TOWNY_CMD));
             fileChanged = true;
         }
         if (!configKeys.contains(VOTE_CMD)) {
-            config.set(VOTE_CMD, false);
+            config.set(VOTE_CMD, CONFIG_DEFAULTS.get(VOTE_CMD));
             fileChanged = true;
         }
         if (!configKeys.contains(DONATE_CMD)) {
-            config.set(DONATE_CMD, false);
+            config.set(DONATE_CMD, CONFIG_DEFAULTS.get(DONATE_CMD));
             fileChanged = true;
         }
         if (!configKeys.contains(POLL_CMD)) {
-            config.set(POLL_CMD, false);
+            config.set(POLL_CMD, CONFIG_DEFAULTS.get(POLL_CMD));
             fileChanged = true;
         }
         if (!configKeys.contains(FNDSRC_CMD)) {
-            config.set(FNDSRC_CMD, false);
+            config.set(FNDSRC_CMD, CONFIG_DEFAULTS.get(FNDSRC_CMD));
             fileChanged = true;
         }
         if (!configKeys.contains(KICKOUT_CMD)) {
-            config.set(KICKOUT_CMD, false);
+            config.set(KICKOUT_CMD, CONFIG_DEFAULTS.get(KICKOUT_CMD));
             fileChanged = true;
         }
         if (!configKeys.contains(POLL_COST)) {
-            config.set(POLL_COST, 0.0);
+            config.set(POLL_COST, CONFIG_DEFAULTS.get(POLL_COST));
             fileChanged = true;
         }
         
@@ -119,14 +132,14 @@ public class DataManager
         this.config.options().header("Fusion Utilities Configuration File");
         this.config.options().indent(2);
         // Default Values
-        this.config.set(MT_RELOAD, false);
-        this.config.set(TOWNY_CMD, false);
-        this.config.set(VOTE_CMD, false);
-        this.config.set(DONATE_CMD, false);
-        this.config.set(POLL_CMD, false);
-        this.config.set(FNDSRC_CMD, false);
-        this.config.set(KICKOUT_CMD, false);
-        this.config.set(POLL_COST, 0.0);
+        this.config.set(MT_RELOAD, CONFIG_DEFAULTS.get(MT_RELOAD));
+        this.config.set(TOWNY_CMD, CONFIG_DEFAULTS.get(TOWNY_CMD));
+        this.config.set(VOTE_CMD, CONFIG_DEFAULTS.get(VOTE_CMD));
+        this.config.set(DONATE_CMD, CONFIG_DEFAULTS.get(DONATE_CMD));
+        this.config.set(POLL_CMD, CONFIG_DEFAULTS.get(POLL_CMD));
+        this.config.set(FNDSRC_CMD, CONFIG_DEFAULTS.get(FNDSRC_CMD));
+        this.config.set(KICKOUT_CMD, CONFIG_DEFAULTS.get(KICKOUT_CMD));
+        this.config.set(POLL_COST, CONFIG_DEFAULTS.get(POLL_COST));
         FusionUtilities.sendConsoleInfo("Default config restored.");
         // Save
         this.saveConfigFile();
@@ -148,7 +161,7 @@ public class DataManager
     public boolean doMinetweakerReload()
     {
         if (this.config != null && this.config.contains(MT_RELOAD))
-            return this.config.getBoolean(MT_RELOAD, false);
+            return this.config.getBoolean(MT_RELOAD, (boolean)CONFIG_DEFAULTS.get(MT_RELOAD));
         return false;
     }
     public void setMinetweakerReload(boolean b)
@@ -158,7 +171,7 @@ public class DataManager
     public boolean doTownyAssistance()
     {
         if (this.config != null && this.config.contains(TOWNY_CMD))
-            return this.config.getBoolean(TOWNY_CMD, false);
+            return this.config.getBoolean(TOWNY_CMD, (boolean)CONFIG_DEFAULTS.get(TOWNY_CMD));
         return false;
     }
     public void setTownyAssistance(boolean b)
@@ -168,7 +181,7 @@ public class DataManager
     public boolean doVoteCommand()
     {
         if (this.config != null && this.config.contains(VOTE_CMD))
-            return this.config.getBoolean(VOTE_CMD, false);
+            return this.config.getBoolean(VOTE_CMD, (boolean)CONFIG_DEFAULTS.get(VOTE_CMD));
         return false;
     }
     public void setVoteCommand(boolean b)
@@ -178,7 +191,7 @@ public class DataManager
     public boolean doDonateCommand()
     {
         if (this.config != null && this.config.contains(DONATE_CMD))
-            return this.config.getBoolean(DONATE_CMD, false);
+            return this.config.getBoolean(DONATE_CMD, (boolean)CONFIG_DEFAULTS.get(DONATE_CMD));
         return false;
     }
     public void setDonateCommand(boolean b)
@@ -188,7 +201,7 @@ public class DataManager
     public boolean doPollCommand()
     {
         if (this.config != null && this.config.contains(POLL_CMD))
-            return this.config.getBoolean(POLL_CMD, false);
+            return this.config.getBoolean(POLL_CMD, (boolean)CONFIG_DEFAULTS.get(POLL_CMD));
         return false;
     }
     public void setPollCommand(boolean b)
@@ -198,7 +211,7 @@ public class DataManager
     public boolean doFindSourceCommand()
     {
         if (this.config != null && this.config.contains(FNDSRC_CMD))
-            return this.config.getBoolean(FNDSRC_CMD, false);
+            return this.config.getBoolean(FNDSRC_CMD, (boolean)CONFIG_DEFAULTS.get(FNDSRC_CMD));
         return false;
     }
     public void setFindSourceCommand(boolean b)
@@ -208,7 +221,7 @@ public class DataManager
     public boolean doKickoutCommand()
     {
         if (this.config != null && this.config.contains(KICKOUT_CMD))
-            return this.config.getBoolean(KICKOUT_CMD, false);
+            return this.config.getBoolean(KICKOUT_CMD, (boolean)CONFIG_DEFAULTS.get(KICKOUT_CMD));
         return false;
     }
     public void setKickoutCmd(boolean b)
@@ -223,7 +236,7 @@ public class DataManager
     public double getPollCost()
     {
         if (this.config != null && this.config.contains(POLL_COST))
-            return this.config.getDouble(POLL_COST, 0.0);
+            return this.config.getDouble(POLL_COST, (double)CONFIG_DEFAULTS.get(POLL_COST));
         return 0.0;
     }
     
