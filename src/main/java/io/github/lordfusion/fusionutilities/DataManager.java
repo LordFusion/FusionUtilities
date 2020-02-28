@@ -15,7 +15,7 @@ import java.util.Set;
 
 public class DataManager
 {
-    private static final String FILE_CONFIG = "/config.yml";
+    private static final String CONFIG_FILENAME = "/config.yml";
     private static String dataFolderPath;
     private YamlConfiguration config;
     
@@ -55,11 +55,12 @@ public class DataManager
     
     /**
      * Loads config.yml from file.
-     * If it does not exist, a new one will be generated according to DataManager.resetConfigFile();
+     * If it does not exist, a new one will be generated.
+     * If an option is not present, it will be set to its default value.
      */
     private void loadConfigFile()
     {
-        File configFile = new File(dataFolderPath + FILE_CONFIG);
+        File configFile = new File(dataFolderPath + CONFIG_FILENAME);
         if (configFile.exists()) {
             this.config = YamlConfiguration.loadConfiguration(configFile);
         } else {
@@ -134,7 +135,7 @@ public class DataManager
     private void saveConfigFile()
     {
         try {
-            this.config.save(dataFolderPath + FILE_CONFIG);
+            this.config.save(dataFolderPath + CONFIG_FILENAME);
         } catch (IOException e) {
             FusionUtilities.sendConsoleWarn("FAILED to save config file:");
             e.printStackTrace();
