@@ -280,6 +280,8 @@ public class PollInstance implements Runnable
         this.noVotes.remove(voter);
         if (!this.yesVotes.contains(voter)) // Avoid duplicates
             this.yesVotes.add(voter);
+        
+        this.checkIfVoteFinished();
     }
     
     /**
@@ -292,6 +294,17 @@ public class PollInstance implements Runnable
         this.yesVotes.remove(voter);
         if (!this.noVotes.contains(voter)) // Avoid duplicates
             this.noVotes.add(voter);
+    
+        this.checkIfVoteFinished();
+    }
+    
+    public void checkIfVoteFinished()
+    {
+        int totalVotes = this.yesVotes.size() + this.noVotes.size();
+        if (totalVotes >= Bukkit.getOnlinePlayers().size()) {
+            FusionUtilities.sendConsoleInfo("All players have voted. Closing poll early.");
+            this.close();
+        }
     }
     
     public void close()
