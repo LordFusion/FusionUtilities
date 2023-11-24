@@ -1,6 +1,7 @@
 package io.github.lordfusion.fusionutilities;
 
 import io.github.lordfusion.fusionutilities.commands.*;
+import io.github.lordfusion.fusionutilities.listeners.FlightMaintainer;
 import io.github.lordfusion.fusionutilities.utilities.MinetweakerReloader;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -32,6 +33,10 @@ public final class FusionUtilities extends JavaPlugin
         sendConsoleInfo("Time to do nothing useful!");
         this.dataManager = new DataManager(this.getDataFolder().getAbsolutePath());
         INSTANCE = this;
+        
+        // Flight Maintainer Utility
+        if (this.dataManager.isEssentialsEnabled())
+            Bukkit.getPluginManager().registerEvents(new FlightMaintainer(this.dataManager.getEssentials()), this);
         
         // Minetweaker Reloader
         if (this.dataManager.doMinetweakerReload())

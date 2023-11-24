@@ -318,6 +318,10 @@ public class DataManager
             return false;
         }
     }
+    public boolean isEssentialsEnabled()
+    {
+        return this.essentialsEnabled;
+    }
     public Essentials getEssentials()
     {
         return (Essentials)this.essentials;
